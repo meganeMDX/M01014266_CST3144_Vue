@@ -71,7 +71,7 @@ nav li{
     transition: 0.3s ease-out;
 }
 
-nav ul a.active, nav ul a:hover{
+nav ul li.active a, nav ul a:hover{
     color: #ffffff;
 }
 

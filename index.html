@@ -21,13 +21,13 @@
                 </div>
 
                 <ul class="nav navbar-nav flex-row">
-                    <li><a href="#"><i class="fa fa-compass" aria-hidden="true"></i>Browse</a></li>
-                    <li><a href="#"><i class="fa fa-bookmark" aria-hidden="true"></i>Saved</a></li>
-                    <li><a href="#"><i class="fa fa-history" aria-hidden="true"></i>History</a></li>
+                    <li :class="{ active: currentPage === 'browsing' }"><a href="#" @click="navigateTo('browsing')"><i class="fa fa-compass" aria-hidden="true"></i>Browse</a></li>
+                    <li :class="{ active: currentPage === 'savedItems' }"><a href="#" @click="navigateTo('savedItems')"><i class="fa fa-bookmark" aria-hidden="true"></i>Saved</a></li>
+                    <li :class="{ active: currentPage === 'history' }"><a href="#" @click="navigateTo('history')"><i class="fa fa-history" aria-hidden="true"></i>History</a></li>
                 </ul>
 
                 <div class="d-flex align-items-center gap-2">
-                    <button id="cart_page_btn" class="btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Cart</button>
+                    <button id="cart_page_btn" class="btn" @click="navigateTo('cart')"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Cart</button>
                     <button id="user" class="btn"><i class="fa fa-user-circle-o" aria-hidden="true"></i></button>
                 </div>
             </div>
@@ -64,9 +64,9 @@
                     <div class="footer_links col-12 col-md-3">
                         <h5>Quick Links</h5>
                         <ul>
-                            <li><a href="#">Browse Lessons & Activities</a></li>
-                            <li><a href="#">My Order History</a></li>
-                            <li><a href="#">My Saved  Items</a></li>
+                            <li><a href="#" @click="navigateTo('browsing')">Browse Lessons & Activities</a></li>
+                            <li><a href="#" @click="navigateTo('savedItems')">My Saved  Items</a></li>
+                            <li><a href="#" @click="navigateTo('history')">My Order History</a></li>
                         </ul> 
                     </div>
 

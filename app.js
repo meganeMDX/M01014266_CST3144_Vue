@@ -8,6 +8,10 @@ const myApp = Vue.createApp({
         }
     },
     methods:{
+        navigateTo(pageName){
+            this.currentPage = pageName;
+            window.scrollTo(0,0)
+        }
 
     },
     computed:{
