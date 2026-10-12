@@ -1,0 +1,209 @@
+html{
+    scroll-behavior: smooth
+}
+
+body{
+    background-color: #fbf3f6;
+    margin: 0;
+    overflow-x: hidden;
+    width: 100%;
+    padding: 0;
+    min-height: 100%;
+}
+
+a{
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#afterSchoolApp{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#lessonsPage, #savedPage, #historyPage, #cartPage{
+    flex: 1;
+}
+
+p{
+    margin: 0;
+}
+
+/* navbar */
+nav{
+    position: sticky;
+    top:0;
+    height: auto;
+    background-color: #ffffff;
+    padding: 0;
+    border-bottom: 1px solid #c88ea7;
+}
+
+.nav_logo p{
+    font-size: 22px;
+    color: #c88ea7;
+    font-weight: bold;
+}
+
+nav .logo{
+    width: 100px;
+    height: 65px;
+    object-fit:contain;
+}
+
+nav ul{
+    gap: 5rem;
+}
+
+nav ul a{
+    font-size: 18px;
+    color: #545454;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: 0.2s ease-out;
+}
+
+nav li{
+    padding: 5px 18px;
+    border-radius: 15px;
+    transition: 0.3s ease-out;
+}
+
+nav ul a.active, nav ul a:hover{
+    color: #ffffff;
+}
+
+nav li.active, nav li:hover{
+    background-color: #c88ea7;
+}
+
+#cart_page_btn {
+    background-color: #d7b1b7;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+#user i{
+    color: #c88ea7;
+    font-size: 2rem;
+}
+
+#user i:hover{
+    color: #2d3748;
+    transform: scale(0.95);
+}
+
+nav button{
+    transition: transform 0.2s ease-in-out;
+}
+
+#cart_page_btn:hover{
+    transform: scale(1.06);
+}
+
+/* footer */
+footer{
+    background-color: #2d3748;
+    color: #ffffff;
+    bottom: 0;
+    height: auto;
+    padding: 20px 30px 5px;
+    font-size: 14px;
+    width: 100%;
+    font-size: 15px;
+}
+
+.footer_logo{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: start;
+    align-items: center;
+    gap: 15px;
+    padding: 0 20px;
+}
+
+.footer_logo p{
+    margin: 0;
+    font-size: 15px;
+    color: #c88ea7;
+}
+
+footer .logo{
+    width: 300px;
+    height: 150px;
+    object-fit: contain;
+}
+
+footer h5{
+    color: #c88ea7;
+    padding-bottom: 5px;
+}
+
+.footer_links ul{
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem
+}
+
+footer a{
+    color: #ffffff;
+    transition: 0.3s ease;
+}
+
+footer a:hover{
+    color: #c88ea7;
+}
+
+footer hr{
+    color: #c88ea7;
+}
+
+.socials a{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    display: grid;
+    place-items: center;
+}
+
+.socials svg{
+    height: 20px;
+    fill: #c88ea7;
+}
+
+.socials_icons{
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.socials a:hover{
+    background-color: transparent;
+    transition: 0.3s ease;
+}
+
+.socials a:hover svg{
+    fill: #ffffff;
+    height: 30px;
+    transition: 0.2s ease-in-out;
+}
+
+.footer_bottom p{
+    margin: 0;
+    font-size: 12px;
+}
+
+.policies a{
+    font-size: 11px;
+    text-decoration: underline;
+    margin: 0 4px;
+}
