@@ -44,7 +44,7 @@
                 <!-- searchbar -->
                 <div class="search_wrapper">
                     <i class="fa fa-search" aria-hidden="true"></i>
-                    <input class="searchbar" type="text" placeholder="Search for lessons or activities...">
+                    <input v-model="searchedText" class="searchbar" type="text" placeholder="Search for lessons or activities...">
                 </div>
 
                 <!-- filter by type -->
@@ -84,13 +84,13 @@
             </div>
 
             <div class="results_found">
-                <span>{{ lessons.length }} Results Found</span>
+                <span>{{ filteredItems.length }} Results Found</span>
             </div>
 
             <!-- display lessons and activities -->
             <div class="container">
-                <div class="row lessons_row gy-4 gx-5">
-                    <div class="col-12 col-md-6 col-lg-4" v-for="lesson in lessons" :key="lesson.id">
+                <div v-if="filteredItems.length> 0" class="row lessons_row gy-4 gx-5">
+                    <div class="col-12 col-md-6 col-lg-4" v-for="lesson in filteredItems" :key="lesson.id">
                         <div class="lesson_card">
                             <div class="image_header" :style="{ backgroundImage: `url('${lesson.imagePath}')` }">
                                 <div class="lesson_tags">
@@ -120,7 +120,7 @@
                                     <span>{{ lesson.rating }} ({{ lesson.ratingCount }})</span>
                                 </div>
                                 <div class="lesson_footer">
-                                    <strong class="lesson_price">£ {{ lesson.price }}</strong>
+                                    <strong class="lesson_price">£ {{ (lesson.price).toFixed(2) }}</strong>
                                     <div class="lesson_buttons">
                                         <button class="btn lesson_cart"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
                                         <button class="btn lesson_info"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
@@ -129,6 +129,11 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                
+                <div v-else class="no_results">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                    <h4>Sorry, No Results Found</h4>
                 </div>
             </div>
 

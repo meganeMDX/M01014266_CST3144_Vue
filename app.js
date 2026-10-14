@@ -6,7 +6,8 @@ const myApp = Vue.createApp({
         return{
             cart:[],
             currentPage:'browsing',
-            lessons:lessons
+            lessons:lessons,
+            searchedText: ""
         }
     },
     methods:{
@@ -24,6 +25,20 @@ const myApp = Vue.createApp({
 
     },
     computed:{
+        // return lessons with the searched text in its title, location, price or availability
+        filteredItems(){
+            if (!this.searchedText.trim()){
+                return this.lessons;
+            }
+
+            const searchedTextLowerCase = this.searchedText.trim().toLowerCase();
+            return this.lessons.filter(lesson =>
+                lesson.topic.toLowerCase().includes(searchedTextLowerCase) ||
+                lesson.location.toLowerCase().includes(searchedTextLowerCase) ||
+                String(lesson.price).includes(searchedTextLowerCase) ||
+                String(lesson.space).includes(searchedTextLowerCase)
+            );
+        }
 
     }
 })

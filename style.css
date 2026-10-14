@@ -483,3 +483,25 @@ footer hr{
     display: flex;
     gap: 10px
 }
+
+/* display when there is no result */
+.no_results{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    width: 100%;
+    padding: 50px 20px;
+}
+
+.no_results i{
+    font-size: 8rem;
+    color: #999;
+}
+
+.no_results h4{
+    color: #333;
+    margin: 0;
+}
