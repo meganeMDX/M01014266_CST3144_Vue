@@ -11,7 +11,8 @@ const myApp = Vue.createApp({
             teachers: teachers,
             selectedTeacherId: "",
             selectedAttribute:"topic",
-            selectedOrder:"asc"
+            selectedOrder:"asc",
+            selectedLessonType: "all"
         }
     },
     methods:{
@@ -41,6 +42,9 @@ const myApp = Vue.createApp({
                 return items.sort((a, b) => b[this.selectedAttribute] - a[this.selectedAttribute]);
             }
             return items.sort((a, b) => b[this.selectedAttribute].toLowerCase().localeCompare(a[this.selectedAttribute].toLowerCase()));
+        },
+        setSelectedItemType(itemType){
+            this.selectedLessonType = itemType;
         }
 
     },
@@ -62,7 +66,12 @@ const myApp = Vue.createApp({
                     !this.selectedTeacherId.trim() || 
                     lesson.teacherId === this.selectedTeacherId;
 
-                return matchSearch && matchTeacher;
+                // filter by lesson/activity
+                const matchItemType =
+                    this.selectedLessonType === "all" ||
+                    lesson.itemType === this.selectedLessonType;
+
+                return matchSearch && matchTeacher && matchItemType;
             });
 
             return this.sortItems(results);

@@ -49,9 +49,9 @@
 
                 <!-- filter by type -->
                 <div class="filter_type">
-                    <button class="btn active">View All</button>
-                    <button class="btn">Lessons</button>
-                    <button class="btn">Activities</button>
+                    <button @click="setSelectedItemType('all')" :class="{ active: selectedLessonType === 'all' }" class="btn">View All</button>
+                    <button @click="setSelectedItemType('lesson')" :class="{ active: selectedLessonType === 'lesson' }" class="btn">Lessons</button>
+                    <button @click="setSelectedItemType('activity')" :class="{ active: selectedLessonType === 'activity' }" class="btn">Activities</button>
                 </div>
 
                 <!-- filters & sorting -->
