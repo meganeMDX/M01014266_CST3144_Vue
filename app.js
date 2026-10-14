@@ -7,7 +7,9 @@ const myApp = Vue.createApp({
             cart:[],
             currentPage:'browsing',
             lessons:lessons,
-            searchedText: ""
+            searchedText: "",
+            teachers: teachers,
+            selectedTeacherId: ""
         }
     },
     methods:{
@@ -25,19 +27,27 @@ const myApp = Vue.createApp({
 
     },
     computed:{
-        // return lessons with the searched text in its title, location, price or availability
         filteredItems(){
-            if (!this.searchedText.trim()){
-                return this.lessons;
-            }
-
             const searchedTextLowerCase = this.searchedText.trim().toLowerCase();
-            return this.lessons.filter(lesson =>
-                lesson.topic.toLowerCase().includes(searchedTextLowerCase) ||
-                lesson.location.toLowerCase().includes(searchedTextLowerCase) ||
-                String(lesson.price).includes(searchedTextLowerCase) ||
-                String(lesson.space).includes(searchedTextLowerCase)
-            );
+
+            return this.lessons.filter(lesson => {
+
+                // find lessons with the searched text in its title, location, price or availability
+                const matchSearch = 
+                    !searchedTextLowerCase || 
+                    lesson.topic.toLowerCase().includes(searchedTextLowerCase) ||
+                    lesson.location.toLowerCase().includes(searchedTextLowerCase) ||
+                    String(lesson.price).includes(searchedTextLowerCase) ||
+                    String(lesson.space).includes(searchedTextLowerCase);
+
+                // filter by selected teacher
+                const matchTeacher = 
+                    !this.selectedTeacherId.trim() || 
+                    lesson.teacherId === this.selectedTeacherId;
+
+                return matchSearch && matchTeacher;
+
+            })
         }
 
     }

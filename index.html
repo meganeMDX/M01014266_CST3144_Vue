@@ -44,7 +44,7 @@
                 <!-- searchbar -->
                 <div class="search_wrapper">
                     <i class="fa fa-search" aria-hidden="true"></i>
-                    <input v-model="searchedText" class="searchbar" type="text" placeholder="Search for lessons or activities...">
+                    <input name="searchbar" v-model="searchedText" class="searchbar" type="text" placeholder="Search for lessons or activities...">
                 </div>
 
                 <!-- filter by type -->
@@ -58,8 +58,9 @@
                 <div class="filters_sorting row g-4">
                     <div class="teacher_filter col-12 col-md-4">
                         <label>Teacher </label>
-                        <select>
-                            <option>All Teachers</option>
+                        <select v-model="selectedTeacherId">
+                            <option value="">All Teachers</option>
+                            <option v-for="teacher in teachers" :value="teacher.id">{{ teacher.title }}. {{ teacher.firstName }} {{ teacher.lastName }}</option>
                         </select>
                     </div>
 
@@ -130,7 +131,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div v-else class="no_results">
                     <i class="fa fa-search" aria-hidden="true"></i>
                     <h4>Sorry, No Results Found</h4>
