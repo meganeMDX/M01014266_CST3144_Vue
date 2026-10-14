@@ -9,7 +9,9 @@ const myApp = Vue.createApp({
             lessons:lessons,
             searchedText: "",
             teachers: teachers,
-            selectedTeacherId: ""
+            selectedTeacherId: "",
+            selectedAttribute:"topic",
+            selectedOrder:"asc"
         }
     },
     methods:{
@@ -23,6 +25,22 @@ const myApp = Vue.createApp({
                 return '-'
             }
             return `${teacher.title}. ${teacher.firstName} ${teacher.lastName}`;
+        },
+        sortItems(items){
+            if (this.selectedOrder === "asc"){
+                // for numbers
+                if (this.selectedAttribute === "price" || this.selectedAttribute === "space" ){
+                    return items.sort((a, b) => a[this.selectedAttribute] - b[this.selectedAttribute]);
+                }
+                // for strings
+                return items.sort((a, b) => a[this.selectedAttribute].toLowerCase().localeCompare(b[this.selectedAttribute].toLowerCase()));
+            }
+
+            // descending order
+            if (this.selectedAttribute === "price" || this.selectedAttribute === "space" ){
+                return items.sort((a, b) => b[this.selectedAttribute] - a[this.selectedAttribute]);
+            }
+            return items.sort((a, b) => b[this.selectedAttribute].toLowerCase().localeCompare(a[this.selectedAttribute].toLowerCase()));
         }
 
     },
@@ -30,8 +48,7 @@ const myApp = Vue.createApp({
         filteredItems(){
             const searchedTextLowerCase = this.searchedText.trim().toLowerCase();
 
-            return this.lessons.filter(lesson => {
-
+            const results = this.lessons.filter(lesson => {
                 // find lessons with the searched text in its title, location, price or availability
                 const matchSearch = 
                     !searchedTextLowerCase || 
@@ -46,10 +63,10 @@ const myApp = Vue.createApp({
                     lesson.teacherId === this.selectedTeacherId;
 
                 return matchSearch && matchTeacher;
+            });
 
-            })
+            return this.sortItems(results);
         }
-
     }
 })
 myApp.mount("#afterSchoolApp")

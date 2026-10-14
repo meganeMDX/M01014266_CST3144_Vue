@@ -66,19 +66,19 @@
 
                     <div class="attribute_filter col-12 col-md-4">
                         <label>Sort By</label>
-                        <select>
-                            <option>Subject</option>
-                            <option>Location</option>
-                            <option>Price</option>
-                            <option>Spaces</option>
+                        <select v-model="selectedAttribute">
+                            <option value="topic">Subject</option>
+                            <option value="location">Location</option>
+                            <option value="price">Price</option>
+                            <option value="space">Spaces</option>
                         </select>
                     </div>
 
                     <div class="sorting col-12 col-md-4">
                         <label>Order By</label>
-                        <select>
-                            <option>Ascending</option>
-                            <option>Descending</option>
+                        <select v-model="selectedOrder">
+                            <option value="asc">Ascending</option>
+                            <option value="desc">Descending</option>
                         </select>
                     </div>
                 </div>
