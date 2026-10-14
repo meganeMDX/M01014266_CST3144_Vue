@@ -35,6 +35,102 @@
 
         <!-- browse lessons and activites page -->
         <div v-if="currentPage === 'browsing'" id="lessonsPage">
+            <div class="browse_header">
+                <h1>Welcome to SkillSprout</h1>
+                <p>Find your passion, build your skills, and unlock your potential beyond the classroom with exciting after-school lessons & activities !</p>
+            </div>
+
+            <div class="filters_section">
+                <!-- searchbar -->
+                <div class="search_wrapper">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                    <input class="searchbar" type="text" placeholder="Search for lessons or activities...">
+                </div>
+
+                <!-- filter by type -->
+                <div class="filter_type">
+                    <button class="btn active">View All</button>
+                    <button class="btn">Lessons</button>
+                    <button class="btn">Activities</button>
+                </div>
+
+                <!-- filters & sorting -->
+                <div class="filters_sorting row g-4">
+                    <div class="teacher_filter col-12 col-md-4">
+                        <label>Teacher </label>
+                        <select>
+                            <option>All Teachers</option>
+                        </select>
+                    </div>
+
+                    <div class="attribute_filter col-12 col-md-4">
+                        <label>Sort By</label>
+                        <select>
+                            <option>Subject</option>
+                            <option>Location</option>
+                            <option>Price</option>
+                            <option>Spaces</option>
+                        </select>
+                    </div>
+
+                    <div class="sorting col-12 col-md-4">
+                        <label>Order By</label>
+                        <select>
+                            <option>Ascending</option>
+                            <option>Descending</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results_found">
+                <span>{{ lessons.length }} Results Found</span>
+            </div>
+
+            <!-- display lessons and activities -->
+            <div class="container">
+                <div class="row lessons_row gy-4 gx-5">
+                    <div class="col-12 col-md-6 col-lg-4" v-for="lesson in lessons" :key="lesson.id">
+                        <div class="lesson_card">
+                            <div class="image_header" :style="{ backgroundImage: `url('${lesson.imagePath}')` }">
+                                <div class="lesson_tags">
+                                    <span class="type_tag">{{ lesson.itemType }}</span>
+                                    <span class="category_tag">{{ lesson.category }}</span>
+                                </div>
+                            </div>
+                            <div class="lesson_information">
+                                <div class="information_header">
+                                    <p>{{ lesson.topic }}</p>
+                                    <button class="save_btn btn"><i class="fa fa-bookmark-o" aria-hidden="true"></i></button>
+                                </div>
+                                <div class="lesson_teacher">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                    <p>{{ getTeacherName(lesson.teacherId) }}</p>
+                                </div>
+                                <div class="lesson_location_spaces">
+                                    <div class="lesson_location">
+                                        <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                        <p>{{ lesson.location }}</p>
+                                    </div>
+                                    <p class="lesson_space">Spots Left: <span v-text="lesson.space"></span></p>
+                                </div>
+                                <hr>
+                                <div class="lesson_rating">
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <span>{{ lesson.rating }} ({{ lesson.ratingCount }})</span>
+                                </div>
+                                <div class="lesson_footer">
+                                    <strong class="lesson_price">£ {{ lesson.price }}</strong>
+                                    <div class="lesson_buttons">
+                                        <button class="btn lesson_cart"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
+                                        <button class="btn lesson_info"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
 

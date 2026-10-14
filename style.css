@@ -24,6 +24,7 @@ a{
 
 #lessonsPage, #savedPage, #historyPage, #cartPage{
     flex: 1;
+    padding: 30px 10px;
 }
 
 p{
@@ -206,4 +207,279 @@ footer hr{
     font-size: 11px;
     text-decoration: underline;
     margin: 0 4px;
+}
+
+/* browsing page */
+.browse_header{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.browse_header p{
+    font-style: italic;
+}
+
+/* searchbar and filters */
+.filters_section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background-color: #ffffff;
+    border-radius: 30px;
+    border: 1.5px solid #c88ea7;
+    width: 60%;
+    margin: 30px auto 5px;
+    height: auto;
+    padding: 20px;
+
+}
+
+.search_wrapper{
+    position: relative;
+    margin: 0 auto;
+    width: 70%;
+}
+
+.searchbar{
+    background-color: #ffe8f1;
+    border: 1px solid #c88ea7;
+    border-radius: 25px;
+    width: 100%;
+    font-size: 16px;
+    padding: 10px;
+    box-sizing: border-box;
+    padding-left: 50px;
+    outline: none;
+}
+
+.searchbar:focus{
+    border-color: #c88ea7;
+    box-shadow: 0 0 0 3px rgba(200, 141, 168, 0.35);
+}
+
+.search_wrapper i{
+    position: absolute;
+    font-size: 1rem;
+    left: 15px;
+    top:50%;
+    transform: translateY(-50%);
+}
+
+.filter_type{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    width: 50%;
+    background-color: #ffe8f1;
+    border: 1px solid #c88ea7;
+    border-radius: 10px;
+    padding: 5px;
+    gap: 10px
+}
+
+.filter_type button{
+    border: none;
+    flex: 1;
+    border-radius: 10px;
+}
+
+.filter_type .active, .filter_type button:hover{
+    background-color: #ffffff;
+}
+
+.filters_sorting{
+    width: 100%;
+    display: flex;
+    align-items:center;
+    justify-content: space-between;
+}
+
+.filters_sorting > div{
+    display: flex;
+    flex-direction: column;
+    gap: 6px
+}
+
+.filters_sorting label{
+    font-size: 14px;
+    margin-left: 15px;
+}
+
+.filters_sorting select{
+    padding: 8px 5px;
+    width: 100%;
+    font-size: 12px;
+    background-color: #ffe8f1;
+    border: 1px solid #c88ea7;
+    border-radius: 8px;
+    cursor: pointer;
+    outline: none;
+}
+
+.filters_sorting select:focus{
+    border-color: #c88ea7;
+    box-shadow: 0 0 0 3px rgba(200, 141, 168, 0.35);
+}
+
+.results_found{
+    display: flex;
+    width: 100%;
+    justify-content:end;
+    padding: 5px 5% 15px;
+}
+
+.results_found span{
+    width: auto;
+    background-color: #ffe8f1;
+    border: 1px solid #c88ea7;
+    font-size: 11px;
+    border-radius: 8px;
+    padding: 5px 10px;
+}
+
+/* lesson and activities display */
+.lesson_card{
+    height: 100%;
+    background-color: #ffffff;
+    border: 1.5px solid #c88ea7;
+    border-radius: 20px;
+    color: #000000;
+    overflow: hidden;
+}
+
+.image_header{
+    height: 200px;
+    position: relative;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.lesson_tags{
+    position: absolute;
+    display: flex;
+    inset: 10px 20px 0 20px;
+    gap: 10px;
+}
+
+.type_tag, .category_tag{
+    padding: 10px;
+    width: auto;
+    border: 1px solid;
+    font-size: 11px;
+    border-radius: 8px;
+    text-align: center;
+    height: 15%;
+    min-height: 30px;
+    align-items: center;
+    display: flex;
+}
+
+.type_tag{
+    background-color: rgba(255, 255, 255, 0.8);
+    border-color: #c88ea7;
+}
+
+.category_tag{
+    background-color: rgba(200, 142, 167, 0.8);
+    border-color: #d7b1b7;
+    color: #ffffff;
+}
+
+.lesson_information{
+    padding: 8px 20px 12px;
+}
+
+.information_header, .lesson_location_spaces, .lesson_footer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.information_header p{
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.save_btn{
+    font-size: 1.5rem;
+    padding: 0;
+}
+
+.save_btn:hover{
+    transform: scale(0.8);
+}
+
+.lesson_teacher, .lesson_location{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.lesson_teacher i, .lesson_location i{
+    color: #c88ea7;
+}
+
+.lesson_space{
+    background-color: #ffe8f1;
+    border: 1px solid #c88ea7;
+    border-radius: 8px;
+    font-size: 11px;
+    padding: 5px;
+    margin: 0;
+}
+
+.lesson_card hr{
+    border-top: 2px solid #c88ea7;
+    margin: 8px 0;
+}
+
+.lesson_rating{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #ffcc4d;
+    margin-bottom: 8px;
+}
+
+.lesson_rating i{
+    font-size: 1.4rem;
+}
+
+.lesson_price{
+    font-size: 18px;
+}
+
+.lesson_cart{
+    background-color: #c88ea7;
+    border-radius: 8px;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.lesson_cart:hover{
+    background-color: #a96f8c;
+    color: #ffffff;
+}
+
+.lesson_info{
+    font-size: 1.4rem;
+    color: #8f8f8f;
+    padding: 0;
+}
+
+.lesson_info:hover{
+    color: #c88ea7;
+}
+
+.lesson_buttons{
+    display: flex;
+    gap: 10px
 }
