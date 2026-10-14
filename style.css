@@ -234,8 +234,7 @@ footer hr{
     width: 60%;
     margin: 30px auto 5px;
     height: auto;
-    padding: 20px;
-
+    padding: 20px 20px 5px;
 }
 
 .search_wrapper{
@@ -325,6 +324,25 @@ footer hr{
 .filters_sorting select:focus{
     border-color: #c88ea7;
     box-shadow: 0 0 0 3px rgba(200, 141, 168, 0.35);
+}
+
+.clear_filters{
+    display: flex;
+    width: 100%;
+    justify-content: end;
+    align-items: center;
+    padding: 0;
+}
+
+.clear_filters button{
+    font-size: 12px;
+    text-decoration: underline;
+    color: #666;
+    border: none;
+}
+
+.clear_filters button:hover{
+    color: #a96f8c;
 }
 
 .results_found{

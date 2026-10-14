@@ -45,8 +45,14 @@ const myApp = Vue.createApp({
         },
         setSelectedItemType(itemType){
             this.selectedLessonType = itemType;
+        },
+        clearFilters(){
+            this.searchedText = "";
+            this.selectedLessonType = "all";
+            this.selectedTeacherId = "";
+            this.selectedAttribute = "topic";
+            this.selectedOrder = "asc";
         }
-
     },
     computed:{
         filteredItems(){
