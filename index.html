@@ -253,7 +253,7 @@
                     </div>
 
                     <div class="form_btn">
-                        <button class="btn" type="submit">Login</button>
+                        <button :disabled="!canAttemptLogin" class="btn" type="submit">Login</button>
                     </div>
                     <div class="switch_form">
                         <p>Don&apos;t have an account yet?</p>
@@ -266,8 +266,8 @@
                     <div class="input_wrapper">
                         <div class="form_input">
                             <label for="full_name">Full Name</label>
-                            <input v-model.trim="register_name" required id="full_name" name="full_name" type="text" placeholder="Enter your Full Name">
-                            <span class="warning"></span>
+                            <input v-model.trim="register_name" required id="full_name" name="full_name" type="text" minlength="2" maxlength="50" placeholder="Enter your Full Name">
+                            <span v-if="register_name && !containsLettersOnly" class="warning">Name must contain letters only</span>
                         </div>
                         <div class="form_input">
                             <label for="new_email">Email</label>
@@ -276,11 +276,11 @@
                         </div>
                         <div class="form_input">
                             <label for="new_password">Password</label>
-                            <input v-model="register_password" required id="new_password" name="new_password" type="password" placeholder="Create a Password">
+                            <input v-model="register_password" @focus="passwordFocused = true" required id="new_password" name="new_password" type="password" placeholder="Create a Password">
                             <ul>
-                                <li>Password must contain at least 8 characters.</li>
-                                <li>Password must contain at least 1 number.</li>
-                                <li>Password must contain at least 1 upper case letter.</li>
+                                <li :class="[passwordFocused ? (isMinLength ? 'completed' : 'warning') : '']">Password must contain at least 8 characters.</li>
+                                <li :class="[passwordFocused ? (containsNum ? 'completed' : 'warning') : '']">Password must contain at least 1 number.</li>
+                                <li :class="[passwordFocused ? (containsUpperCase ? 'completed' : 'warning') : '']">Password must contain at least 1 upper case letter.</li>
                             </ul>
                             <span class="warning"></span>
                         </div>
@@ -288,7 +288,7 @@
                     </div>
 
                     <div class="form_btn btn">
-                        <button class="btn" type="submit">Register</button>
+                        <button :disabled="!canAttemptRegistration" class="btn" type="submit">Register</button>
                     </div>
                     <div class="switch_form">
                         <p>Already have an account?</p>
@@ -296,7 +296,6 @@
                     </div>
                 </form>
             </div>
-
 
         </div>
 

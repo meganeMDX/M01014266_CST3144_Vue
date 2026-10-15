@@ -1,5 +1,9 @@
 import {teachers, lessons, users, orders, ratings} from './data.js';
 
+const numberRegx = /\d/;
+const upperCaseRegex = /(?=.*[A-Z])/;
+const onlyLettersRegex = /^[A-Za-z]+$/;
+
 const {createApp} = Vue
 const myApp = Vue.createApp({
     data(){
@@ -26,6 +30,8 @@ const myApp = Vue.createApp({
             register_email: "",
             register_password: "",
             currentUser:null,
+
+            passwordFocused: false
         }
     },
     methods:{
@@ -76,19 +82,30 @@ const myApp = Vue.createApp({
             this.selectedLesson = null
         },
         openLoginForm(){
+            this.clearFormsLoginRegistrationForm();
             this.showPopup = true;
             this.showRegistrationForm = false ;
             this.showLoginForm = true;
         },
         openRegistrationForm(){
+            this.clearFormsLoginRegistrationForm();
             this.showPopup = true;
             this.showLoginForm = false;
             this.showRegistrationForm = true ;
         },
         closeLoginRegistrationForm(){
+            this.clearFormsLoginRegistrationForm();
             this.showPopup = false;
             this.showLoginForm = false;
             this.showRegistrationForm = false ;
+        },
+        clearFormsLoginRegistrationForm(){
+            this.login_email = "",
+            this.login_password = "",
+            this.register_name = "",
+            this.register_email = "",
+            this.register_password = "",
+            this.passwordFocused = false;
         },
         loginUser(){
 
@@ -124,6 +141,30 @@ const myApp = Vue.createApp({
             });
 
             return this.sortItems(results);
+        },
+        // name check
+        containsLettersOnly(){
+            return onlyLettersRegex.test(this.register_name);
+        },
+        // password checks
+        isMinLength(){
+            return this.register_password.length >= 8;
+        },
+        containsNum(){
+            return numberRegx.test(this.register_password);
+        },
+        containsUpperCase(){
+            return upperCaseRegex.test(this.register_password);
+        },
+        canAttemptLogin(){
+            return (this.login_email && this.login_password);
+        },
+        canAttemptRegistration(){
+            return (
+                this.register_name && this.register_email && this.register_password &&
+                this.containsLettersOnly &&
+                this.isMinLength && this.containsNum && this.containsUpperCase
+            );
         }
     }
 })

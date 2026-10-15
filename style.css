@@ -31,6 +31,13 @@ p{
     margin: 0;
 }
 
+.btn:disabled{
+    background-color: #545454 !important; 
+    color: #ffffff;
+    cursor: not-allowed;
+    pointer-events: auto;
+}
+
 /* navbar */
 nav{
     position: sticky;
@@ -838,8 +845,13 @@ form input::placeholder{
     padding: 0;
 }
 
-span.warning{
-    font-size: 13px;
+.form_input .warning{
+    margin-left: 6px;
+    font-size: 11px;
+}
+
+.warning{
+    font-size: 12px;
 }
 
 .login_registration_popup .warning{
