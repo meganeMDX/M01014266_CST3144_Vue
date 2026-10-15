@@ -12,7 +12,9 @@ const myApp = Vue.createApp({
             selectedTeacherId: "",
             selectedAttribute:"topic",
             selectedOrder:"asc",
-            selectedLessonType: "all"
+            selectedLessonType: "all",
+            showPopup: false,
+            selectedLesson: null
         }
     },
     methods:{
@@ -52,6 +54,15 @@ const myApp = Vue.createApp({
             this.selectedTeacherId = "";
             this.selectedAttribute = "topic";
             this.selectedOrder = "asc";
+        },
+        openLessonPopup(selectedLesson){
+            this.selectedLesson = selectedLesson
+            this.showPopup = true;
+            console.log(selectedLesson);
+        },
+        closeLessonPopup(){
+            this.showPopup = false;
+            this.selectedLesson = null
         }
     },
     computed:{

@@ -131,7 +131,7 @@
                                     <strong class="lesson_price">£ {{ (lesson.price).toFixed(2) }}</strong>
                                     <div class="lesson_buttons">
                                         <button class="btn lesson_cart"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
-                                        <button class="btn lesson_info"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
+                                        <button @click="openLessonPopup(lesson)" class="btn lesson_info"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -159,6 +159,79 @@
 
         <!-- cart page -->
         <div v-if="currentPage === 'cart'" id="cartPage">
+
+        </div>
+
+        <div v-if="showPopup" class="popup_overlay">
+
+            <!-- lesson popup -->
+            <div v-if="selectedLesson" class="lesson_popup">
+                <button class="btn close_popup" @click="closeLessonPopup">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+
+                <div class="popup_tags">
+                    <span class="category_tag">{{ selectedLesson.itemType }}</span>
+                    <span class="slot_tag">n slot(s) have already been booked</span>
+                </div>
+
+                <h4>{{ selectedLesson.topic }}</h4>
+
+                <div class="selected_lesson_img">
+                    <img :src="selectedLesson.imagePath">
+                </div>
+
+                <div class="lesson_table row g-0">
+                    <div class="col-6 col-md-3 gx-2">
+                        <span class="table_header">Rating</span>
+                        <span class="popup_rating">
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            {{ selectedLesson.rating }} ({{ selectedLesson.ratingCount }})
+                        </span>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <span class="table_header">Category</span>
+                        <span>{{ selectedLesson.category }}</span>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <span class="table_header">Availability</span>
+                        <span>{{ selectedLesson.space }}</span>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <span class="table_header">Price</span>
+                        <span><strong>£ {{ (selectedLesson.price).toFixed(2) }}</strong></span>
+                    </div>
+                </div>
+
+                <div class="selected_lesson_description">
+                    <p>About This Course</p>
+                    <p class="popup_desc">{{ selectedLesson.description }}</p>
+                </div>
+
+                <div class="selected_lesson_information">
+                    <div class="lesson_location">
+                        <i class="fa fa-map-marker" aria-hidden="true"></i>
+                        <p>Location: <span>{{ selectedLesson.location }}</span></p>
+                    </div>
+                    <div class="lesson_schedule">
+                        <i class="fa fa-clock-o" aria-hidden="true"></i>
+                        <p>Schedule: <span>{{ selectedLesson.scheduledDay }}s, {{ selectedLesson.scheduledStartTime }} - {{ selectedLesson.scheduledEndTime }}</span></p>
+                    </div>
+                     <div class="lesson_teacher">
+                        <i class="fa fa-user" aria-hidden="true"></i>
+                        <p>Instructor: <span>{{ getTeacherName(selectedLesson.teacherId) }}</span></p>
+                    </div>
+                </div>
+                <div class="lesson_buttons">
+                    <div></div>
+                    <button class="btn lesson_cart"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
+                    <button class="save_btn btn"><i class="fa fa-bookmark-o" aria-hidden="true"></i></button>
+                </div>
+            </div>
+
 
         </div>
 
