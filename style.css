@@ -567,7 +567,7 @@ footer hr{
     overflow-y: auto;
 }
 
-.close_popup{
+.lesson_popup .close_popup{
     position: sticky;
     top: 0;
     align-self: flex-end;
@@ -704,4 +704,148 @@ footer hr{
 .lesson_popup .lesson_cart{
     width: 75%;
     border-radius: 18px;
+}
+
+/* login & registration popup */
+.login_registration_popup{
+    background-color: #ffffff;
+    border: 1.5px solid #c88ea7;
+    border-radius: 20px;
+    width: 30%;
+    min-width: 350px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 15px 25px 15px;
+    position: relative;
+    box-sizing: border-box;
+    gap:15px;
+}
+
+.login_registration_popup .close_popup{
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+.login_registration_popup form{
+    width: 100%;
+}
+
+.login_registration_popup h2{
+    margin: 0 0 24px;
+    text-align: center;
+    line-height: 1.2;
+    margin: 0;
+    margin-bottom: 25px;
+    color: #25282c;
+    font-size: 25px;
+}
+
+.login_registration_popup .input_wrapper{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 25px
+}
+
+.form_input{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+}
+
+.login_registration_popup label{
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+form input{
+    border: 2px solid #c88ea7;
+    background-color: #ffe8f1;
+    border-radius: 8px;
+    font-size: 14px;
+    padding: 10px 120px 10px 5px ;
+    outline: none;
+    width: 100%;
+}
+
+form input:focus{
+    border-color: #a96f8c;
+    box-shadow: 0 0 0 2px rgba(200, 142, 167, 0.8);
+}
+
+form input::placeholder{
+    color: #666;
+}
+
+.login_registration_popup ul{
+    margin: 8px 0 0;
+    padding-left: 22px;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.6;
+}
+
+.login_registration_popup .form_btn{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.login_registration_popup .form_btn button{
+    width: 70%;
+    padding: 10px 16px;
+    background-color: #c88ea7;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 16px;
+    transition: 0.2s ease;
+}
+
+.login_registration_popup .form_btn button:hover{
+    background-color: #b77996;
+}
+
+.switch_form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 4px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.switch_form button{
+    text-decoration: underline;
+    color: #85222f;
+    font-size: 15px;
+    padding: 0;
+}
+
+span.warning{
+    font-size: 13px;
+}
+
+.login_registration_popup .warning{
+    color: #a32638;
+}
+
+.login_registration_popup .completed{
+    color: #28A745
 }

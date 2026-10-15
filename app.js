@@ -7,14 +7,25 @@ const myApp = Vue.createApp({
             cart:[],
             currentPage:'browsing',
             lessons:lessons,
-            searchedText: "",
             teachers: teachers,
+
+            searchedText: "",
             selectedTeacherId: "",
             selectedAttribute:"topic",
             selectedOrder:"asc",
             selectedLessonType: "all",
+
             showPopup: false,
-            selectedLesson: null
+            selectedLesson: null,
+            showLoginForm:false,
+            showRegistrationForm:false,
+
+            login_email: "",
+            login_password:"",
+            register_name: "",
+            register_email: "",
+            register_password: "",
+            currentUser:null,
         }
     },
     methods:{
@@ -63,6 +74,27 @@ const myApp = Vue.createApp({
         closeLessonPopup(){
             this.showPopup = false;
             this.selectedLesson = null
+        },
+        openLoginForm(){
+            this.showPopup = true;
+            this.showRegistrationForm = false ;
+            this.showLoginForm = true;
+        },
+        openRegistrationForm(){
+            this.showPopup = true;
+            this.showLoginForm = false;
+            this.showRegistrationForm = true ;
+        },
+        closeLoginRegistrationForm(){
+            this.showPopup = false;
+            this.showLoginForm = false;
+            this.showRegistrationForm = false ;
+        },
+        loginUser(){
+
+        },
+        registerUser(){
+
         }
     },
     computed:{

@@ -28,7 +28,7 @@
 
                 <div class="d-flex align-items-center gap-2">
                     <button id="cart_page_btn" class="btn" @click="navigateTo('cart')"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Cart</button>
-                    <button id="user" class="btn"><i class="fa fa-user-circle-o" aria-hidden="true"></i></button>
+                    <button id="user" class="btn" @click="openLoginForm"><i class="fa fa-user-circle-o" aria-hidden="true"></i></button>
                 </div>
             </div>
         </nav>
@@ -230,6 +230,71 @@
                     <button class="btn lesson_cart"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
                     <button class="save_btn btn"><i class="fa fa-bookmark-o" aria-hidden="true"></i></button>
                 </div>
+            </div>
+
+            <!-- login/registration popup -->
+            <div v-if="showLoginForm || showRegistrationForm" class="login_registration_popup">
+                <button class="btn close_popup" @click="closeLoginRegistrationForm">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+
+                <form v-if="showLoginForm" id="login_form" v-on:submit.prevent="loginUser">
+                    <h2>Login</h2>
+                    <div class="input_wrapper">
+                        <div class="form_input">
+                            <label for="user_email">Email</label>
+                            <input v-model.trim="login_email" required id="user_email" name="user_email" type="email" placeholder="Enter your an Email">
+                        </div>
+                        <div class="form_input">
+                            <label for="user_password">Password</label>
+                            <input v-model="login_password" required id="user_password" name="user_password" type="password" placeholder="Enter your Password">
+                        </div>
+                        <span class="warning"></span>   
+                    </div>
+
+                    <div class="form_btn">
+                        <button class="btn" type="submit">Login</button>
+                    </div>
+                    <div class="switch_form">
+                        <p>Don&apos;t have an account yet?</p>
+                        <button type="button" class="btn" @click="openRegistrationForm">Register</button>
+                    </div>
+                </form>
+
+                <form v-if="showRegistrationForm" id="registration_form" v-on:submit.prevent="registerUser">
+                    <h2>Create Account</h2>
+                    <div class="input_wrapper">
+                        <div class="form_input">
+                            <label for="full_name">Full Name</label>
+                            <input v-model.trim="register_name" required id="full_name" name="full_name" type="text" placeholder="Enter your Full Name">
+                            <span class="warning"></span>
+                        </div>
+                        <div class="form_input">
+                            <label for="new_email">Email</label>
+                            <input v-model.trim="register_email" required id="new_email" name="new_email" type="email" placeholder="Enter your Email">
+                            <span class="warning"></span>
+                        </div>
+                        <div class="form_input">
+                            <label for="new_password">Password</label>
+                            <input v-model="register_password" required id="new_password" name="new_password" type="password" placeholder="Create a Password">
+                            <ul>
+                                <li>Password must contain at least 8 characters.</li>
+                                <li>Password must contain at least 1 number.</li>
+                                <li>Password must contain at least 1 upper case letter.</li>
+                            </ul>
+                            <span class="warning"></span>
+                        </div>
+                        <span class="warning"></span>   
+                    </div>
+
+                    <div class="form_btn btn">
+                        <button class="btn" type="submit">Register</button>
+                    </div>
+                    <div class="switch_form">
+                        <p>Already have an account?</p>
+                        <button type="button" class="btn" @click="openLoginForm">Login</button>
+                    </div>
+                </form>
             </div>
 
 
