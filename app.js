@@ -129,6 +129,32 @@ const myApp = Vue.createApp({
         canAddToCart(item){
             return (item.space > 0)
         },
+        removeFromCart(itemId){
+            const cartItem = this.cart[itemId];
+            if (!cartItem) return;
+
+            cartItem.itemObj.space += cartItem.count;
+            delete this.cart[itemId];
+        },
+        changeCartQuantity(itemId, change){
+            const cartItem = this.cart[itemId];
+            if (!cartItem) return;
+
+            if(change === -1){
+                if (cartItem.count === 1){
+                    this.removeFromCart(itemId);
+                }else{
+                    // decreasing quantity
+                    cartItem.count --;
+                    cartItem.itemObj.space ++;
+                }
+
+            // increasing quantity
+            }else if (change === 1 && cartItem.itemObj.space > 0){
+                cartItem.count ++;
+                cartItem.itemObj.space --;
+            }
+        },
         showMessage(text){
             this.showMessagePopup = true;
             this.messageText = text;
