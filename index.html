@@ -27,7 +27,7 @@
                 </ul>
 
                 <div class="d-flex align-items-center gap-2">
-                    <button id="cart_page_btn" class="btn" @click="navigateTo('cart')"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Cart</button>
+                    <button id="cart_page_btn" class="btn" @click="navigateTo('cart')" :disabled="getCartCount===0"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Cart ({{ getCartCount }})</button>
                     <button id="user" class="btn" @click="openLoginForm"><i class="fa fa-user-circle-o" aria-hidden="true"></i></button>
                 </div>
             </div>
@@ -130,7 +130,7 @@
                                 <div class="lesson_footer">
                                     <strong class="lesson_price">£ {{ (lesson.price).toFixed(2) }}</strong>
                                     <div class="lesson_buttons">
-                                        <button class="btn lesson_cart"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
+                                        <button class="btn lesson_cart" :disabled="!canAddToCart(lesson)" @click="addToCart(lesson)"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
                                         <button @click="openLessonPopup(lesson)" class="btn lesson_info"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
                                     </div>
                                 </div>
@@ -227,7 +227,7 @@
                 </div>
                 <div class="lesson_buttons">
                     <div></div>
-                    <button class="btn lesson_cart"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
+                    <button class="btn lesson_cart" :disabled="!canAddToCart(selectedLesson)" @click="addToCart(selectedLesson)"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
                     <button class="save_btn btn"><i class="fa fa-bookmark-o" aria-hidden="true"></i></button>
                 </div>
             </div>
@@ -299,6 +299,13 @@
 
         </div>
 
+        <!-- message popup -->
+        <div v-if="showMessagePopup" class="toast-container position-fixed top-0 end-0 p-3 text-center">
+            <div class="toast show">
+                <div class="toast-body">{{ messageText }}</div>
+            </div>
+        </div>
+        
         <footer>
             <div class="container-fluid">
                 <div class="footer_content row align-items-start ">

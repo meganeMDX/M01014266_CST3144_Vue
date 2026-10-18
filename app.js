@@ -8,7 +8,7 @@ const {createApp} = Vue
 const myApp = Vue.createApp({
     data(){
         return{
-            cart:[],
+            cart:{},
             currentPage:'browsing',
             lessons:lessons,
             teachers: teachers,
@@ -31,7 +31,11 @@ const myApp = Vue.createApp({
             register_password: "",
             currentUser:null,
 
-            passwordFocused: false
+            passwordFocused: false,
+
+            messageText: "",
+            showMessagePopup : false
+
         }
     },
     methods:{
@@ -112,6 +116,27 @@ const myApp = Vue.createApp({
         },
         registerUser(){
 
+        },
+        addToCart(item){
+            if (this.cart[item.id] === undefined){
+                this.cart[item.id] = {itemObj: item, count: 1};
+            }else{
+                this.cart[item.id].count ++;
+            }
+            item.space --;
+            this.showMessage("Item added to cart");
+        },
+        canAddToCart(item){
+            return (item.space > 0)
+        },
+        showMessage(text){
+            this.showMessagePopup = true;
+            this.messageText = text;
+
+            setTimeout(() => {
+                this.showMessagePopup = false;
+                this.messageText = "";
+            }, 1500);
         }
     },
     computed:{
@@ -165,6 +190,14 @@ const myApp = Vue.createApp({
                 this.containsLettersOnly &&
                 this.isMinLength && this.containsNum && this.containsUpperCase
             );
+        },
+        getCartCount(){
+            let count = 0;
+
+            Object.values(this.cart).forEach(value => {
+                count += value.count;
+            });
+            return count;
         }
     }
 })

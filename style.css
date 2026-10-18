@@ -861,3 +861,15 @@ form input::placeholder{
 .login_registration_popup .completed{
     color: #28A745
 }
+
+/* message popup */
+.toast-container{
+    max-width: 250px;
+    width: auto;
+    z-index: 99999;
+}
+
+.toast-container .toast.show{
+    background-color: #a96f8c;
+    color: #ffffff;
+}
