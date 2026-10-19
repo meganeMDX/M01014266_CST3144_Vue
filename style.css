@@ -710,6 +710,14 @@ footer hr{
     font-size: 18px;
 }
 
+.checkout_form .warning{
+    color: #a32638;
+}
+
+.checkout_form input{
+    padding: 10px 5px 10px 5px ;
+}
+
 /* display if user removed all items while on cart page */
 .all_items_removed_display{
     display: flex;
@@ -1082,7 +1090,7 @@ form input::placeholder{
 }
 
 /* confirmation for deleting cart item popup */
-.delete_confirmation_popup{
+.delete_confirmation_popup, .checkout_message_popup{
     background-color: #ffffff;
     border: 1px solid #c88ea7;
     border-radius: 20px;
@@ -1100,11 +1108,11 @@ form input::placeholder{
     gap: 25px
 }
 
-.delete_confirmation_popup h2{
+.delete_confirmation_popup h2, .checkout_message_popup h2{
     font-size: 28px;
 }
 
-.delete_popup_content{
+.delete_popup_content, .checkout_message_popup > div{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1123,7 +1131,7 @@ form input::placeholder{
     gap: 60px
 }
 
-.delete_popup_btns button{
+.delete_popup_btns button, .checkout_message_popup button{
     border-radius: 15px;
     color: #ffffff;
     transition: 0.2s ease;
@@ -1131,7 +1139,7 @@ form input::placeholder{
     height: 45px;
 }
 
-.delete_popup_btns .confirm_remove_btn{
+.delete_popup_btns .confirm_remove_btn, .checkout_message_popup button{
     background-color: #c88ea7;
 }
 
@@ -1146,6 +1154,34 @@ form input::placeholder{
 
 .delete_popup_btns .cancel_btn:hover{
     background-color: #222;
+    color: #ffffff;
+}
+
+/* checkout confirmation popup */
+.checkout_message_popup{
+    gap: 5px;
+}
+.checkout_message_popup > p{
+    font-size: 18px;
+}
+
+.checkout_message_popup > div{
+    gap:0;
+}
+
+.checkout_message_popup i{
+    font-size: 4rem;
+    color: #096d11;
+    padding: 0;
+}
+
+.checkout_message_popup button{
+    margin-top: 18px;
+    width: 150px;
+}
+
+.checkout_message_popup button:hover{
+    background-color: #545454;
     color: #ffffff;
 }
 

@@ -1,8 +1,17 @@
 import {teachers, lessons, users, orders, ratings} from './data.js';
 
+const userTemp = {
+        id: "001",
+        name: "Christy Watson",
+        email: "christy@gmail.com",
+        password: "C12345678",
+        savedLessonIDs: ["001"]
+    };
+
 const numberRegx = /\d/;
 const upperCaseRegex = /(?=.*[A-Z])/;
 const onlyLettersRegex = /^[A-Za-z]+$/;
+const onlyNumbersRegex = /^\d+$/;
 
 const {createApp} = Vue
 const myApp = Vue.createApp({
@@ -12,6 +21,7 @@ const myApp = Vue.createApp({
             currentPage:'browsing',
             lessons:lessons,
             teachers: teachers,
+            orders: orders,
 
             searchedText: "",
             selectedTeacherId: "",
@@ -29,7 +39,8 @@ const myApp = Vue.createApp({
             register_name: "",
             register_email: "",
             register_password: "",
-            currentUser:null,
+            // currentUser:null,
+            currentUser:userTemp,
 
             passwordFocused: false,
 
@@ -39,11 +50,17 @@ const myApp = Vue.createApp({
             checkout_full_name: "",
             checkout_phone_number: "",
 
-            itemToDelete: null
+            itemToDelete: null,
+
+            checkoutComplete:false,
         }
     },
     methods:{
         navigateTo(pageName){
+            if (this.currentPage === 'cart'){
+                this.clearCheckoutForm();
+            };
+
             this.currentPage = pageName;
             window.scrollTo(0,0);
         },
@@ -179,8 +196,57 @@ const myApp = Vue.createApp({
             }, 1500);
         },
         checkout(){
+            if (this.getCartCount === 0 || !this.canCheckout){
+                this.showMessage("Please check your details and cart");
+                return;
+            }
+            
+            this.saveOrder();
 
+            // display message
+            this.checkoutComplete = true;
+            this.showPopup=true;
         },
+        closeCheckoutPopup(){
+            this.checkoutComplete = false;
+            this.showPopup=false;
+            
+            // clear cart
+            this.cart = {}
+            this.navigateTo('browsing');
+        },
+        // check string contains letters only
+        containsLettersOnly(name){
+            return onlyLettersRegex.test(name);
+        },
+        clearCheckoutForm(){
+            this.checkout_full_name = "";
+            this.checkout_phone_number= "";
+        },
+        saveOrder(){
+            const lessonsOrdered = Object.entries(this.cart).map(( [key, value] ) => {
+                return {
+                    lessonId: key,
+                    space: value.count
+                };
+
+            });
+
+            const newOrder={
+                userId: this.currentUser.id,
+                name: this.checkout_full_name,
+                phoneNumber: this.checkout_phone_number,
+                lessonIDs: lessonsOrdered,
+                orderDate: new Date().toISOString().split('T')[0],
+                totalPrice: this.getCartTotal
+            }
+
+            // save order to database
+
+
+            this.orders.push(newOrder);
+            console.log(this.orders);
+        }
     },
     computed:{
         filteredItems(){
@@ -210,9 +276,9 @@ const myApp = Vue.createApp({
 
             return this.sortItems(results);
         },
-        // name check
-        containsLettersOnly(){
-            return onlyLettersRegex.test(this.register_name);
+        // // name check
+        containsNumbersOnly(){
+            return onlyNumbersRegex.test(this.checkout_phone_number);
         },
         // password checks
         isMinLength(){
@@ -230,7 +296,7 @@ const myApp = Vue.createApp({
         canAttemptRegistration(){
             return (
                 this.register_name && this.register_email && this.register_password &&
-                this.containsLettersOnly &&
+                this.containsLettersOnly(this.register_name) &&
                 this.isMinLength && this.containsNum && this.containsUpperCase
             );
         },
@@ -248,10 +314,14 @@ const myApp = Vue.createApp({
             Object.values(this.cart).forEach(value => {
                 total += (value.itemObj.price * value.count);
             });
-            return total;
+            return Math.round(total * 100) / 100 ;
         },
         canCheckout(){
-            return (this.checkout_full_name && this.checkout_phone_number);
+            return (
+                this.containsLettersOnly(this.checkout_full_name) && 
+                this.containsNumbersOnly &&
+                this.checkout_phone_number.length >= 7
+            );
         }
     }
 })

@@ -230,13 +230,14 @@
                             <div class="input_wrapper">
                                 <div class="form_input">
                                     <label for="checkout_name">Full Name</label>
-                                    <input v-model.trim="checkout_full_name" required id="checkout_name" name="checkout_name" type="text" placeholder="Enter your name">
-                                    <span class="warning"></span>
+                                    <input v-model.trim="checkout_full_name" required id="checkout_name" name="checkout_name" type="text" maxlength="50" placeholder="Enter your name">
+                                    <span  v-if="checkout_full_name && !containsLettersOnly(checkout_full_name)" class="warning">Name must contain letters only</span>
                                 </div>
                                 <div class="form_input">
                                     <label for="checkout_tel_number">Phone Number</label>
-                                    <input v-model="checkout_phone_number" required id="checkout_tel_number" name="checkout_tel_number" type="text" placeholder="Enter your phone number">
-                                    <span class="warning"></span>
+                                    <input v-model="checkout_phone_number" required id="checkout_tel_number" minlength="7" maxlength="15" name="checkout_tel_number" type="text" placeholder="Enter your phone number (7-15 digits)">
+                                    <span v-if="checkout_phone_number && !containsNumbersOnly" class="warning">Phone number must be numbers only</span>
+                                    <span v-if="checkout_phone_number && checkout_phone_number.length < 7" class="warning">Phone number contain 7-15 digits</span>
                                 </div>
                             </div>
 
@@ -375,8 +376,8 @@
                     <div class="input_wrapper">
                         <div class="form_input">
                             <label for="full_name">Full Name</label>
-                            <input v-model.trim="register_name" required id="full_name" name="full_name" type="text" minlength="2" maxlength="50" placeholder="Enter your Full Name">
-                            <span v-if="register_name && !containsLettersOnly" class="warning">Name must contain letters only</span>
+                            <input v-model.trim="register_name" required id="full_name" name="full_name" type="text" maxlength="50" placeholder="Enter your Full Name">
+                            <span v-if="register_name && !containsLettersOnly(register_name)" class="warning">Name must contain letters only</span>
                         </div>
                         <div class="form_input">
                             <label for="new_email">Email</label>
@@ -417,6 +418,18 @@
                     <button type="button" class="btn cancel_btn" @click="closeRemoveConfirmationPopup">Cancel</button>
                     <button type="button" class="btn confirm_remove_btn" @click="removeFromCart(itemToDelete.id)">Remove</button>
                 </div>
+            </div>
+
+            <!-- checkout confirmation message  -->
+            <div v-if="checkoutComplete" class="checkout_message_popup">
+                <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                <h2>Successful Transaction</h2>
+                <p>Thank you !</p>
+                <div>
+                    <p>Your Order for {{ getCartCount }} lesson(s) has successfully been submitted.</p>
+                    <p>You will now be redirected to the Browsing Page.</p>
+                </div>
+                <button type="button" class="btn cancel_btn" @click="closeCheckoutPopup">Close</button>
             </div>
 
         </div>
