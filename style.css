@@ -531,6 +531,226 @@ footer hr{
     margin: 0;
 }
 
+/* cart page */
+#cartPage{
+    width: 100%;
+}
+
+.page_headers{
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.cart_content{
+    width: 100%;
+    padding: 0 35px;
+}
+
+.cart_display{
+    width: 100%;
+}
+
+.cart_item{
+    position: relative;
+    background-color: #ffffff;
+    border: solid 1.5px #c88ea7;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    padding: 18px 30px 18px 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.cart_img{
+    width: 100%;
+}
+
+.cart_img img{
+    display: block;
+    width: 100%;
+    height: 85px;
+    object-fit: cover;
+    border-radius: 18px;
+}
+
+.cart_product_info{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+}
+
+
+.cart_price_qty > div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.quantity_controls{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-size: 17px;
+}
+
+.quantity_controls i{
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    color: #000000;
+}
+
+.quantity_controls button{
+    background-color: #ffe8f1;
+    border: solid 1px #c88ea7;
+    border-radius: 8px;
+    padding: 2px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 99;
+    transition: 0.2s ease;
+}
+
+.quantity_controls i:hover{
+    color: #c17898;
+}
+
+.quantity_controls button:hover{
+    background-color: #ffffff;
+    border: solid 1px #c88ea7;
+}
+
+.cart_item_total{
+    font-size: 18px;
+}
+
+.remove_cart_item{
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.remove_cart_item i{
+    font-size: 1.5rem;
+    color: #000000;
+    transition: 0.2s ease;
+}
+
+.remove_cart_item button{
+    padding: 2px;
+    transition: 0.2s ease;
+}
+
+.remove_cart_item i:hover{
+    color: #555;
+}
+
+.remove_cart_item i:hover, .remove_cart_item button:hover{
+    transform: scale(1.1);
+}
+
+
+/* checkout form */
+.checkout_col{
+    padding-right: 0;
+}
+
+.checkout_form form {
+    width: 100%;
+    box-sizing: border-box;
+    position: sticky;
+    top: 20px;
+    padding: 15px 10px 30px;
+}
+
+.checkout_form h3{
+    font-size: 1.3rem;
+    margin: 0;
+    margin-bottom: 5px;
+}
+
+.checkout_form hr{
+    border-top: 2px solid #c88ea7;
+}
+
+.checkout_form .input_wrapper{
+    margin-bottom: 40px;
+    gap: 60px;
+}
+
+.cart_details > div{
+    display: flex;
+    justify-content: space-between ;
+    align-items: center;
+    text-align: center;
+}
+
+.cart_details{
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.checkout_form .form_btn{
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+}
+
+#cart_total{
+    font-size: 18px;
+}
+
+/* display if user removed all items while on cart page */
+.all_items_removed_display{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    width: 100%;
+    padding: 20px;
+}
+
+.all_items_removed_display i{
+    font-size: 12rem;
+    color: #c88ea7;
+}
+
+.all_items_removed_display h4{
+    color: #000000;
+    margin: 0;
+}
+
+.all_items_removed_display p{
+    font-size: 17px;
+}
+
+.all_items_removed_display button{
+    background-color: #c88ea7;
+    color: #ffffff;
+    font-size: 16px;
+    width: 250px;
+    padding: 15px 10px;
+    margin-top: 15px;
+    border-radius: 15px;
+    transition: 0.2s ease;
+}
+
+.all_items_removed_display button:hover{
+    background-color: #c17898;
+}
+
 /* popups */
 .popup_overlay{
     position: fixed;
@@ -714,7 +934,7 @@ footer hr{
 }
 
 /* login & registration popup */
-.login_registration_popup{
+.login_registration_popup, .checkout_form{
     background-color: #ffffff;
     border: 1.5px solid #c88ea7;
     border-radius: 20px;
@@ -756,7 +976,7 @@ footer hr{
     font-size: 25px;
 }
 
-.login_registration_popup .input_wrapper{
+.login_registration_popup .input_wrapper, .checkout_form .input_wrapper{
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -804,14 +1024,14 @@ form input::placeholder{
     line-height: 1.6;
 }
 
-.login_registration_popup .form_btn{
+.login_registration_popup .form_btn, .checkout_form .form_btn{
     display: flex;
     width: 100%;
     justify-content: center;
     margin-top: 20px;
 }
 
-.login_registration_popup .form_btn button{
+.login_registration_popup .form_btn button, .checkout_form .form_btn button{
     width: 70%;
     padding: 10px 16px;
     background-color: #c88ea7;
@@ -822,7 +1042,7 @@ form input::placeholder{
     transition: 0.2s ease;
 }
 
-.login_registration_popup .form_btn button:hover{
+.login_registration_popup .form_btn button:hover, .checkout_form .form_btn button:hover{
     background-color: #b77996;
 }
 
@@ -850,16 +1070,83 @@ form input::placeholder{
     font-size: 11px;
 }
 
-.warning{
+.login_registration_popup .warning{
+    color: #a32638;
     font-size: 12px;
 }
 
-.login_registration_popup .warning{
-    color: #a32638;
+.login_registration_popup .completed{
+    color: #28A745;
+    font-size: 12px;
+    margin-left: 6px;
 }
 
-.login_registration_popup .completed{
-    color: #28A745
+/* confirmation for deleting cart item popup */
+.delete_confirmation_popup{
+    background-color: #ffffff;
+    border: 1px solid #c88ea7;
+    border-radius: 20px;
+    width: 35%;
+    min-width: 450px;
+    max-width: 500px;
+    height: auto;
+    padding: 35px 15px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 25px
+}
+
+.delete_confirmation_popup h2{
+    font-size: 28px;
+}
+
+.delete_popup_content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px
+}
+
+.delete_popup_content strong{
+    font-size: 18px;
+}
+
+.delete_popup_btns{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 60px
+}
+
+.delete_popup_btns button{
+    border-radius: 15px;
+    color: #ffffff;
+    transition: 0.2s ease;
+    width: 105px;
+    height: 45px;
+}
+
+.delete_popup_btns .confirm_remove_btn{
+    background-color: #c88ea7;
+}
+
+.delete_popup_btns .confirm_remove_btn:hover{
+    background-color: #c93643;
+    color: #ffffff;
+}
+
+.delete_popup_btns .cancel_btn{
+    background-color: #545454;
+}
+
+.delete_popup_btns .cancel_btn:hover{
+    background-color: #222;
+    color: #ffffff;
 }
 
 /* message popup */
@@ -872,4 +1159,8 @@ form input::placeholder{
 .toast-container .toast.show{
     background-color: #a96f8c;
     color: #ffffff;
+}
+
+.checkout_form{
+    width: 100%;
 }

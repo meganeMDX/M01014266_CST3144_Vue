@@ -27,7 +27,10 @@
                 </ul>
 
                 <div class="d-flex align-items-center gap-2">
-                    <button id="cart_page_btn" class="btn" @click="navigateTo('cart')" :disabled="getCartCount===0"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Cart ({{ getCartCount }})</button>
+                    <button id="cart_page_btn" class="btn" @click="currentPage === 'cart' ? navigateTo('browsing') : navigateTo('cart')" :disabled="getCartCount===0 && currentPage !== 'cart'">
+                        <i class="fa fa-shopping-cart" aria-hidden="true"></i> 
+                        {{ currentPage === "cart" ? "Browse Items" : `Cart (${getCartCount})` }}
+                    </button>
                     <button id="user" class="btn" @click="openLoginForm"><i class="fa fa-user-circle-o" aria-hidden="true"></i></button>
                 </div>
             </div>
@@ -159,9 +162,115 @@
 
         <!-- cart page -->
         <div v-if="currentPage === 'cart'" id="cartPage">
+            <h2 class="page_headers">Shopping Cart</h2>
+
+            <div v-if="getCartCount!== 0" class="cart_content row g-4 align-items-start">
+
+                <!-- cart items -->
+                <div class="col-12 col-lg-8">
+                    <div class="cart_display">
+                        <div v-for="(cartItem, itemId) in cart" :key="itemId" class="cart_item mb-3">
+                            <div class="row g-3 align-items-center">
+
+                                <div class="col-3 col-sm-3 col-lg-2">
+                                    <div class="cart_img">
+                                        <img :src="cartItem.itemObj.imagePath" class="img-fluid">
+                                    </div>
+                                </div>
+
+                                <div class="col-9 col-sm-9 col-lg-3">
+                                    <div class="cart_product_info">
+                                        <strong>{{ cartItem.itemObj.topic }}</strong>
+                                        <div class="lesson_location">
+                                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                            <span>{{ cartItem.itemObj.location }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-lg-6">
+                                    <div class="cart_price_qty row g-2">
+                                        <div class="col-4">
+                                            <span class="table_header">Unit Price</span>
+                                            <span>£ {{ (cartItem.itemObj.price).toFixed(2) }}</span>
+                                        </div>
+
+                                        <div class="col-4">
+                                            <span class="table_header">Qty</span>
+                                            <div class="quantity_controls">
+                                                <button type="button" class="btn" @click="changeCartQuantity(itemId, -1)"><i class="fa fa-minus" aria-hidden="true"></i></button>
+                                                <span>{{ cartItem.count }}</span>
+                                                <button type="button" class="btn" @click="changeCartQuantity(itemId, 1)" :disabled="!canAddToCart(cartItem.itemObj)"><i class="fa fa-plus" aria-hidden="true"></i></i></button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-4">
+                                            <span class="table_header">Total</span>
+                                            <span class="cart_item_total"><strong>£ {{ (cartItem.itemObj.price * cartItem.count ).toFixed(2) }}</strong></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="remove_cart_item">
+                                    <button type="button" class="btn" @click="confirmRemove(cartItem.itemObj)">
+                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- checkout form -->
+                <div class="col-12 col-lg-4 checkout_col">
+                    <div class="checkout_form">
+                        <form v-on:submit.prevent="checkout">
+                            <h3>Personal Details & Checkout</h3>
+                            <hr>
+                            <div class="input_wrapper">
+                                <div class="form_input">
+                                    <label for="checkout_name">Full Name</label>
+                                    <input v-model.trim="checkout_full_name" required id="checkout_name" name="checkout_name" type="text" placeholder="Enter your name">
+                                    <span class="warning"></span>
+                                </div>
+                                <div class="form_input">
+                                    <label for="checkout_tel_number">Phone Number</label>
+                                    <input v-model="checkout_phone_number" required id="checkout_tel_number" name="checkout_tel_number" type="text" placeholder="Enter your phone number">
+                                    <span class="warning"></span>
+                                </div>
+                            </div>
+
+                            <h3>Order Details</h3>
+                            <hr>
+                            <div class="cart_details">
+                                <div>
+                                    <p>Number of Items</p>
+                                    <p v-text="getCartCount"></p>
+                                </div>
+                                <div>
+                                    <p>Total Amount</p>
+                                    <strong id="cart_total">$ {{ getCartTotal.toFixed(2) }}</strong>
+                                </div>
+                            </div>
+
+                            <div class="form_btn">
+                                <button :disabled="!canCheckout" class="btn" type="submit">Checkout</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div v-else-if="getCartCount === 0" class="all_items_removed_display">
+                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                <h4>Oops, your cart is empty!</h4>
+                <p>Looks like you have no after-school lessons or activities in your cart</p>
+                <button class="btn" @click="navigateTo('browsing')">Browse Lessons & Activities</button>
+            </div>
 
         </div>
 
+        <!-- popups -->
         <div v-if="showPopup" class="popup_overlay">
 
             <!-- lesson popup -->
@@ -295,6 +404,19 @@
                         <button type="button" class="btn" @click="openLoginForm">Login</button>
                     </div>
                 </form>
+            </div>
+
+            <!-- confirm cart item deletion popup -->
+            <div v-if="itemToDelete" class="delete_confirmation_popup">
+                <h2>Delete Confirmation</h2>
+                <div class="delete_popup_content">
+                    <p>Are you sure you want to remove this item from your cart?</p>
+                    <p><strong>{{ itemToDelete.topic }}</strong></p>
+                </div>
+                <div class="delete_popup_btns">
+                    <button type="button" class="btn cancel_btn" @click="closeRemoveConfirmationPopup">Cancel</button>
+                    <button type="button" class="btn confirm_remove_btn" @click="removeFromCart(itemToDelete.id)">Remove</button>
+                </div>
             </div>
 
         </div>

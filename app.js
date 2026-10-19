@@ -34,8 +34,12 @@ const myApp = Vue.createApp({
             passwordFocused: false,
 
             messageText: "",
-            showMessagePopup : false
+            showMessagePopup : false,
 
+            checkout_full_name: "",
+            checkout_phone_number: "",
+
+            itemToDelete: null
         }
     },
     methods:{
@@ -129,12 +133,22 @@ const myApp = Vue.createApp({
         canAddToCart(item){
             return (item.space > 0)
         },
+        confirmRemove(item){
+            this.itemToDelete = item;
+            this.showPopup=true;
+        },
+        closeRemoveConfirmationPopup(){
+            this.showPopup = false;
+            this.itemToDelete = null;
+        },
         removeFromCart(itemId){
             const cartItem = this.cart[itemId];
             if (!cartItem) return;
 
             cartItem.itemObj.space += cartItem.count;
             delete this.cart[itemId];
+            this.closeRemoveConfirmationPopup();
+            this.showMessage("Item removed from cart");
         },
         changeCartQuantity(itemId, change){
             const cartItem = this.cart[itemId];
@@ -142,7 +156,7 @@ const myApp = Vue.createApp({
 
             if(change === -1){
                 if (cartItem.count === 1){
-                    this.removeFromCart(itemId);
+                    this.confirmRemove(cartItem.itemObj);
                 }else{
                     // decreasing quantity
                     cartItem.count --;
@@ -163,7 +177,10 @@ const myApp = Vue.createApp({
                 this.showMessagePopup = false;
                 this.messageText = "";
             }, 1500);
-        }
+        },
+        checkout(){
+
+        },
     },
     computed:{
         filteredItems(){
@@ -224,6 +241,17 @@ const myApp = Vue.createApp({
                 count += value.count;
             });
             return count;
+        },
+        getCartTotal(){
+            let total = 0;
+
+            Object.values(this.cart).forEach(value => {
+                total += (value.itemObj.price * value.count);
+            });
+            return total;
+        },
+        canCheckout(){
+            return (this.checkout_full_name && this.checkout_phone_number);
         }
     }
 })
