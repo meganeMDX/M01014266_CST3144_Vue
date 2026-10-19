@@ -61,6 +61,10 @@ const myApp = Vue.createApp({
                 this.clearCheckoutForm();
             };
 
+            if (this.currentPage === 'browsing' || this.currentPage === 'savedItems'){
+                this.clearFilters();
+            }
+
             this.currentPage = pageName;
             window.scrollTo(0,0);
         },
@@ -100,7 +104,6 @@ const myApp = Vue.createApp({
         openLessonPopup(selectedLesson){
             this.selectedLesson = selectedLesson
             this.showPopup = true;
-            console.log(selectedLesson);
         },
         closeLessonPopup(){
             this.showPopup = false;
@@ -245,7 +248,6 @@ const myApp = Vue.createApp({
 
 
             this.orders.push(newOrder);
-            console.log(this.orders);
         },
         saveLesson(lesson){
             // check if user is logged in
@@ -264,14 +266,55 @@ const myApp = Vue.createApp({
                 this.currentUser.savedLessonIDs.push(lesson.id);
                 this.showMessage(`${lesson.itemType} saved`);
             }
-            console.log(this.currentUser.savedLessonIDs);
         }
     },
     computed:{
         filteredItems(){
+            let lessonsArr;
+
+            // check if user is on browsing page or saved items page
+            if (this.currentPage === 'browsing'){
+                lessonsArr = this.lessons;
+            }else{
+                if (!this.currentUser){
+                    return [];
+                }
+                lessonsArr = this.lessons.filter(lesson => 
+                    this.currentUser.savedLessonIDs.includes(lesson.id)
+                );
+            }
+
+            // filter lessons
             const searchedTextLowerCase = this.searchedText.trim().toLowerCase();
 
-            const results = this.lessons.filter(lesson => {
+            const results = lessonsArr.filter(lesson => {
+                // find lessons with the searched text in its title, location, price or availability
+                const matchSearch = 
+                    !searchedTextLowerCase || 
+                    lesson.topic.toLowerCase().includes(searchedTextLowerCase) ||
+                    lesson.location.toLowerCase().includes(searchedTextLowerCase) ||
+                    String(lesson.price).includes(searchedTextLowerCase) ||
+                    String(lesson.space).includes(searchedTextLowerCase);
+
+                // filter by selected teacher
+                const matchTeacher = 
+                    !this.selectedTeacherId.trim() || 
+                    lesson.teacherId === this.selectedTeacherId;
+
+                // filter by lesson/activity
+                const matchItemType =
+                    this.selectedLessonType === "all" ||
+                    lesson.itemType === this.selectedLessonType;
+
+                return matchSearch && matchTeacher && matchItemType;
+            });
+
+            return this.sortItems(results);
+        },
+        savedItems(){
+            const searchedTextLowerCase = this.searchedText.trim().toLowerCase();
+
+            const results = this.currentUser.savedLessonIDs.filter(lesson => {
                 // find lessons with the searched text in its title, location, price or availability
                 const matchSearch = 
                     !searchedTextLowerCase || 

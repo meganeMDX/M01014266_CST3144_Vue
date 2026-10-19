@@ -36,12 +36,15 @@
             </div>
         </nav>
 
-        <!-- browse lessons and activites page -->
-        <div v-if="currentPage === 'browsing'" id="lessonsPage">
-            <div class="browse_header">
+        <!-- browse lessons and activites page & saved items page -->
+        <div v-if="currentPage === 'browsing' || currentPage === 'savedItems' " id="lessonsPage">
+
+            <div v-if="currentPage === 'browsing'" class="browse_header">
                 <h1>Welcome to SkillSprout</h1>
                 <p>Find your passion, build your skills, and unlock your potential beyond the classroom with exciting after-school lessons & activities !</p>
             </div>
+
+            <h2 v-if="currentPage === 'savedItems'" class="page_headers">Saved Lessons &amp; Activities</h2>
 
             <div class="filters_section">
                 <!-- searchbar -->
@@ -145,16 +148,21 @@
                     </div>
                 </div>
 
+                <div v-else-if="currentPage === 'savedItems' && !currentUser"  class="no_results">
+                    <i class="fa fa-sign-in" aria-hidden="true"></i>
+                    <h4>Login to save lessons and activities</h4>
+                </div>
+
+                <div v-else-if="currentPage === 'savedItems' && currentUser.savedLessonIDs.length === 0" class="no_results">
+                    <i class="fa fa-bookmark" aria-hidden="true"></i>
+                    <h4>You have not saved any lessons yet</h4>
+                </div>
+
                 <div v-else class="no_results">
                     <i class="fa fa-search" aria-hidden="true"></i>
                     <h4>Sorry, No Results Found</h4>
                 </div>
             </div>
-
-        </div>
-
-        <!-- saved lessons and activites page -->
-        <div v-if="currentPage === 'savedItems'" id="savedPage">
 
         </div>
 
