@@ -112,7 +112,10 @@
                             <div class="lesson_information">
                                 <div class="information_header">
                                     <p>{{ lesson.topic }}</p>
-                                    <button class="save_btn btn"><i class="fa fa-bookmark-o" aria-hidden="true"></i></button>
+                                    <button class="save_btn btn" @click="saveLesson(lesson)">
+                                        <i v-if="currentUser?.savedLessonIDs.includes(lesson.id)" class="fa fa-bookmark" aria-hidden="true"></i>
+                                        <i v-else class="fa fa-bookmark-o" aria-hidden="true"></i>
+                                    </button>
                                 </div>
                                 <div class="lesson_teacher">
                                     <i class="fa fa-user" aria-hidden="true"></i>

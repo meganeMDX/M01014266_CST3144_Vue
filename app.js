@@ -246,6 +246,25 @@ const myApp = Vue.createApp({
 
             this.orders.push(newOrder);
             console.log(this.orders);
+        },
+        saveLesson(lesson){
+            // check if user is logged in
+            if (!this.currentUser){
+                this.showMessage("Login to save lessons");
+                return;
+            }
+
+            if (this.currentUser.savedLessonIDs.includes(lesson.id)){
+                // unsave
+                this.currentUser.savedLessonIDs = this.currentUser.savedLessonIDs.filter(id => id !== lesson.id);
+                this.showMessage(`${lesson.itemType} removed from saves`);
+
+            }else{
+                // save
+                this.currentUser.savedLessonIDs.push(lesson.id);
+                this.showMessage(`${lesson.itemType} saved`);
+            }
+            console.log(this.currentUser.savedLessonIDs);
         }
     },
     computed:{
