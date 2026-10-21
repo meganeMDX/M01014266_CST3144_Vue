@@ -11,7 +11,7 @@
     <link rel="icon" type="image/x-icon" href="images/logo/nav_logo.png">
 </head>
 <body>
-    <div id="afterSchoolApp">
+    <div id="afterSchoolApp" v-cloak>
 
         <nav class="navbar">
             <div class="container-fluid d-flex align-items-center justify-content-between">
@@ -168,7 +168,111 @@
 
         <!-- order history page  -->
         <div v-if="currentPage === 'history'" id="historyPage">
+            <h2 class="page_headers">Oder History</h2>
+            <div v-if="orders.length > 0" class="history_content">
 
+                <div class="history_filter">
+                    <label>Order By: </label>
+                    <select v-model="selectedHistoryOrder">
+                        <option value="desc">Newest - Oldest</option>
+                        <option value="asc">Oldest - Newest</option>
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div v-for="order in sortedOrders" :key="order.id" class="history_order">
+                            <div class="order_card">
+                                <div class="order_card_left">
+                                    <strong>Order #{{ order.id }}</strong>
+                                    <div class="order_details">
+                                        <div class="order_date">
+                                            <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                            <p>{{ order.orderDate }}</p>
+                                        </div>
+                                        <div class="order_username">
+                                            <i class="fa fa-user" aria-hidden="true"></i>
+                                            <p>{{ order.name }}</p>
+                                        </div>
+                                        <div class="order_tel">
+                                            <i class="fa fa-phone" aria-hidden="true"></i>
+                                            <p>{{ order.phoneNumber }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="order_card_right">
+                                    <p>Total Amount</p>
+                                    <strong>£ {{ (order.totalPrice).toFixed(2) }}</strong>
+                                </div>
+                                <!-- button to expand or collapse order items -->
+                                <button class="btn" @click="toggleOrder(order.id)">
+                                    <i v-if="expandedOrders.includes(order.id)" class="fa fa-chevron-up" aria-hidden="true"></i>
+                                    <i v-else class="fa fa-chevron-down" aria-hidden="true"></i>
+                                </button>
+                            </div>
+
+                            <!-- expanded order items -->
+                            <div v-if="expandedOrders.includes(order.id)" class="order_items">
+                                <div v-for="item in order.itemDetails" class="order_history_items">
+                                    <div class="row align-items-center">
+
+                                        <div class="col-3 col-lg-2">
+                                            <div class="cart_img">
+                                                <img :src="item.lesson.imagePath">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-9 col-lg-2">
+                                            <strong v-text="item.lesson.topic"></strong>
+                                        </div>
+
+                                        <div class="col-12 col-lg-4">
+                                            <div class="order_item_details">
+                                                <div class="lesson_location">
+                                                    <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                                    <p v-text="item.lesson.location"></p>
+                                                </div>
+                                                <div class="lesson_teacher">
+                                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                                    <p v-text="getTeacherName(item.lesson.teacherId)"></p>
+                                                </div>
+                                                <div class="lesson_schedule">
+                                                    <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                                    <p>{{ item.lesson.scheduledDay }}s, {{ item.lesson.scheduledStartTime }} - {{ item.lesson.scheduledEndTime }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-6 col-lg-2">
+                                            <div class="order_item_price">
+                                                <p>Qty: {{ item.space }}</p>
+                                                <strong>£ {{ (item.lesson.price).toFixed(2) }} x {{ item.space }}</strong>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-6 col-lg-2">
+                                            <div class="order_item_rating" v-if="getLessonRating(item.lesson.id)">
+                                                <p>Your rating: <span><i class="fa fa-star" aria-hidden="true"></i>{{ getLessonRating(item.lesson.id).rating }}</span></p>
+                                                <button class="btn edit_rating_btn">Edit rating</button>
+                                            </div>
+                                            <div v-else class="order_item_rating">
+                                                <button class="btn new_rating_btn">Rate {{ item.lesson.itemType }}</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-else class="all_items_removed_display">
+                <i class="fa fa-history" aria-hidden="true"></i>
+                <h4>Oops, you don't have any previous orders</h4>
+                <button class="btn" @click="navigateTo('browsing')">Browse Lessons & Activities</button>
+            </div>
         </div>
 
         <!-- cart page -->

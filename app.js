@@ -19,9 +19,12 @@ const myApp = Vue.createApp({
         return{
             cart:{},
             currentPage:'browsing',
+
             lessons:lessons,
             teachers: teachers,
             orders: orders,
+            expandedOrders:[],
+            ratings:ratings,
 
             searchedText: "",
             selectedTeacherId: "",
@@ -53,6 +56,7 @@ const myApp = Vue.createApp({
             itemToDelete: null,
 
             checkoutComplete:false,
+            selectedHistoryOrder: "desc"
         }
     },
     methods:{
@@ -266,6 +270,20 @@ const myApp = Vue.createApp({
                 this.currentUser.savedLessonIDs.push(lesson.id);
                 this.showMessage(`${lesson.itemType} saved`);
             }
+        },
+        toggleOrder(orderId){
+            const index = this.expandedOrders.indexOf(orderId);
+            if (index === -1){
+                this.expandedOrders.push(orderId);
+            }else{
+                this.expandedOrders.splice(index, 1)
+            }   
+        },
+        getLessonRating(lessonId){
+            return this.ratings.find(rating => 
+                rating.userId === this.currentUser.id &&
+                rating.lessonId === lessonId
+            );
         }
     },
     computed:{
@@ -384,6 +402,24 @@ const myApp = Vue.createApp({
                 this.containsNumbersOnly &&
                 this.checkout_phone_number.length >= 7
             );
+        },
+        ordersWithLessonDetails(){
+            return this.orders.map(order => ({
+                ...order,
+                itemDetails: order.lessonIDs.map(item => ({
+                    ...item,
+                    lesson: this.lessons.find( lesson => lesson.id === item.lessonId)
+                }))
+            }));
+            console.log(this.expandedOrders);
+        },
+        sortedOrders(){
+            const orders = [...(this.ordersWithLessonDetails || [])];
+            if (this.selectedHistoryOrder === "asc"){
+                return orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+            }else{
+                return orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+            }
         }
     }
 })
