@@ -133,8 +133,9 @@
                                 </div>
                                 <hr>
                                 <div class="lesson_rating">
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <span>{{ lesson.rating }} ({{ lesson.ratingCount }})</span>
+                                    <i class="fa fa-star" :class="{ 'no_rating' : lesson.ratingCount === 0}" aria-hidden="true"></i>
+                                    <span v-if="lesson.ratingCount > 0">{{ (lesson.rating/lesson.ratingCount).toFixed(1) }} ({{ lesson.ratingCount }})</span>
+                                    <span v-else class="no_rating">No Ratings</span>
                                 </div>
                                 <div class="lesson_footer">
                                     <strong class="lesson_price">£ {{ (lesson.price).toFixed(2) }}</strong>
@@ -168,7 +169,7 @@
 
         <!-- order history page  -->
         <div v-if="currentPage === 'history'" id="historyPage">
-            <h2 class="page_headers">Oder History</h2>
+            <h2 class="page_headers">Order History</h2>
             <div v-if="orders.length > 0" class="history_content">
 
                 <div class="history_filter">
@@ -253,10 +254,10 @@
                                         <div class="col-6 col-lg-2">
                                             <div class="order_item_rating" v-if="getLessonRating(item.lesson.id)">
                                                 <p>Your rating: <span><i class="fa fa-star" aria-hidden="true"></i>{{ getLessonRating(item.lesson.id).rating }}</span></p>
-                                                <button class="btn edit_rating_btn">Edit rating</button>
+                                                <button class="btn edit_rating_btn" @click="openRatingPopup(item.lesson)">Edit rating</button>
                                             </div>
                                             <div v-else class="order_item_rating">
-                                                <button class="btn new_rating_btn">Rate {{ item.lesson.itemType }}</button>
+                                                <button class="btn new_rating_btn" @click="openRatingPopup(item.lesson)">Rate {{ item.lesson.itemType }}</button>
                                             </div>
                                         </div>
 
@@ -315,7 +316,7 @@
                                             <div class="quantity_controls">
                                                 <button type="button" class="btn" @click="changeCartQuantity(itemId, -1)"><i class="fa fa-minus" aria-hidden="true"></i></button>
                                                 <span>{{ cartItem.count }}</span>
-                                                <button type="button" class="btn" @click="changeCartQuantity(itemId, 1)" :disabled="!canAddToCart(cartItem.itemObj)"><i class="fa fa-plus" aria-hidden="true"></i></i></button>
+                                                <button type="button" class="btn" @click="changeCartQuantity(itemId, 1)" :disabled="!canAddToCart(cartItem.itemObj)"><i class="fa fa-plus" aria-hidden="true"></i></button>
                                             </div>
                                         </div>
 
@@ -522,6 +523,33 @@
                 </form>
             </div>
 
+            <!-- Set Rating Popup -->
+            <div v-if="ratedItem" class="rating_popup">
+                <h4>How would you rate this {{ ratedItem.itemType }} ?</h4>
+                <div class="rating_lesson_content">
+                    <p>{{ ratedItem.topic }} </p>
+                    <div>
+                        <div class="lesson_teacher">
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                            <p>{{ getTeacherName(ratedItem.teacherId) }}</p>
+                        </div>
+                        <div class="lesson_location">
+                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                            <p>{{ ratedItem.location }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="selected_rating">
+                    <button v-for="star in 5" :key=star class="btn" @click="selectedRating=star">
+                        <i class="fa fa-star" aria-hidden="true" :class="{ 'active_star' : star <= selectedRating}"></i>
+                    </button>
+                </div>
+                <div class="rating_popup_btns">
+                    <button type="button" class="btn cancel_btn" @click="closeRatingPopup">Cancel</button>
+                    <button type="button" class="btn confirm_rating_btn" @click="rateItem" :disabled="selectedRating === 0">Confirm</button>
+                </div>
+            </div>
+
             <!-- confirm cart item deletion popup -->
             <div v-if="itemToDelete" class="delete_confirmation_popup">
                 <h2>Delete Confirmation</h2>
@@ -546,7 +574,6 @@
                 </div>
                 <button type="button" class="btn cancel_btn" @click="closeCheckoutPopup">Close</button>
             </div>
-
         </div>
 
         <!-- message popup -->
@@ -606,9 +633,7 @@
                 </div>
             </div>
         </footer>
-
     </div>
-
     <script type="module" src="app.js"></script>
 </body>
 </html>

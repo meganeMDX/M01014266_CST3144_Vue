@@ -24,7 +24,6 @@ const myApp = Vue.createApp({
             teachers: teachers,
             orders: orders,
             expandedOrders:[],
-            ratings:ratings,
 
             searchedText: "",
             selectedTeacherId: "",
@@ -36,6 +35,9 @@ const myApp = Vue.createApp({
             selectedLesson: null,
             showLoginForm:false,
             showRegistrationForm:false,
+            ratedItem: null,
+            selectedRating: 0,
+
 
             login_email: "",
             login_password:"",
@@ -44,6 +46,7 @@ const myApp = Vue.createApp({
             register_password: "",
             // currentUser:null,
             currentUser:userTemp,
+            userRatings: [],
 
             passwordFocused: false,
 
@@ -58,6 +61,9 @@ const myApp = Vue.createApp({
             checkoutComplete:false,
             selectedHistoryOrder: "desc"
         }
+    },
+    created(){
+        this.fetchUserRatings()
     },
     methods:{
         navigateTo(pageName){
@@ -280,10 +286,49 @@ const myApp = Vue.createApp({
             }   
         },
         getLessonRating(lessonId){
-            return this.ratings.find(rating => 
+            // get rating that user gave to a lesson
+            return this.userRatings.find(rating => 
                 rating.userId === this.currentUser.id &&
                 rating.lessonId === lessonId
             );
+        },
+        openRatingPopup(lesson){
+            this.ratedItem = lesson;
+            this.showPopup = true;
+        },
+        closeRatingPopup(){
+            this.showPopup = false;
+            this.ratedItem = null;
+            this.selectedRating = 0;
+        },
+        rateItem(){
+            const existingRating = this.getLessonRating(this.ratedItem.id);
+            if (existingRating){
+                // edit rating
+                this.ratedItem.rating -= existingRating.rating
+                existingRating.rating = this.selectedRating;
+                this.ratedItem.rating += this.selectedRating
+            }else{
+                // record new rating
+                const newRating = {
+                    userId: this.currentUser.id,
+                    lessonId: this.ratedItem.id,
+                    rating: this.selectedRating,
+                }
+                ratings.push(newRating)
+
+                this.userRatings.push(newRating)
+                
+                // update lesson rating
+                this.ratedItem.rating += this.selectedRating
+                this.ratedItem.ratingCount += 1
+            }
+            this.closeRatingPopup();
+        },
+        fetchUserRatings(){
+            // retrieves all ratings done by user
+            this.userRatings = ratings.filter(rating => rating.userId === this.currentUser.id)
+            console.log(this.userRatings)
         }
     },
     computed:{
@@ -415,6 +460,7 @@ const myApp = Vue.createApp({
         },
         sortedOrders(){
             const orders = [...(this.ordersWithLessonDetails || [])];
+
             if (this.selectedHistoryOrder === "asc"){
                 return orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
             }else{
