@@ -75,6 +75,11 @@ const myApp = Vue.createApp({
                 this.clearFilters();
             }
 
+            if (this.currentPage === 'history'){
+                // collapse order details when leaving history page
+                this.expandedOrders = [];
+            }
+
             this.currentPage = pageName;
             window.scrollTo(0,0);
         },
@@ -328,7 +333,6 @@ const myApp = Vue.createApp({
         fetchUserRatings(){
             // retrieves all ratings done by user
             this.userRatings = ratings.filter(rating => rating.userId === this.currentUser.id)
-            console.log(this.userRatings)
         }
     },
     computed:{
@@ -456,7 +460,6 @@ const myApp = Vue.createApp({
                     lesson: this.lessons.find( lesson => lesson.id === item.lessonId)
                 }))
             }));
-            console.log(this.expandedOrders);
         },
         sortedOrders(){
             const orders = [...(this.ordersWithLessonDetails || [])];
