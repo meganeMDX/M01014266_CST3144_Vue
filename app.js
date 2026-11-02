@@ -183,7 +183,14 @@ const myApp = Vue.createApp({
             cartItem.itemObj.space += cartItem.count;
             delete this.cart[itemId];
             this.closeRemoveConfirmationPopup();
-            this.showMessage("Item removed from cart");
+
+            // redirect to browse page if all items have been removed from cart
+            if(this.getCartCount === 0){
+                this.showMessage("Your cart is now empty. Browse to add more!");
+                this.navigateTo('browsing');
+            }else{
+                this.showMessage("Item removed from cart");
+            }
         },
         changeCartQuantity(itemId, change){
             const cartItem = this.cart[itemId];

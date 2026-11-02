@@ -38,6 +38,10 @@ p{
     pointer-events: auto;
 }
 
+.btn:disabled:hover{
+    transform: none !important;
+}
+
 [v-cloak]{
     display: none !important;
 }

@@ -27,7 +27,7 @@
                 </ul>
 
                 <div class="d-flex align-items-center gap-2">
-                    <button id="cart_page_btn" class="btn" @click="currentPage === 'cart' ? navigateTo('browsing') : navigateTo('cart')" :disabled="getCartCount===0 && currentPage !== 'cart'">
+                    <button id="cart_page_btn" class="btn" @click="currentPage === 'cart' ? navigateTo('browsing') : navigateTo('cart')" :disabled="getCartCount===0">
                         <i class="fa fa-shopping-cart" aria-hidden="true"></i> 
                         {{ currentPage === "cart" ? "Browse Items" : `Cart (${getCartCount})` }}
                     </button>
@@ -280,7 +280,7 @@
         <div v-if="currentPage === 'cart'" id="cartPage">
             <h2 class="page_headers">Shopping Cart</h2>
 
-            <div v-if="getCartCount!== 0" class="cart_content row g-4 align-items-start">
+            <div class="cart_content row g-4 align-items-start">
 
                 <!-- cart items -->
                 <div class="col-12 col-lg-8">
@@ -376,13 +376,6 @@
                         </form>
                     </div>
                 </div>
-            </div>
-
-            <div v-else-if="getCartCount === 0" class="all_items_removed_display">
-                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                <h4>Oops, your cart is empty!</h4>
-                <p>Looks like you have no after-school lessons or activities in your cart</p>
-                <button class="btn" @click="navigateTo('browsing')">Browse Lessons & Activities</button>
             </div>
 
         </div>
