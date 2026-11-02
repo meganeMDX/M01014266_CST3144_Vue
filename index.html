@@ -395,7 +395,7 @@
                 <button class="btn close_popup" @click="closeLessonPopup">
                     <i class="fa fa-times" aria-hidden="true"></i>
                 </button>
-
+                
                 <div class="popup_tags">
                     <span class="category_tag">{{ selectedLesson.itemType }}</span>
                     <span class="slot_tag">n slot(s) have already been booked</span>
@@ -446,7 +446,7 @@
                         <i class="fa fa-clock-o" aria-hidden="true"></i>
                         <p>Schedule: <span>{{ selectedLesson.scheduledDay }}s, {{ selectedLesson.scheduledStartTime }} - {{ selectedLesson.scheduledEndTime }}</span></p>
                     </div>
-                     <div class="lesson_teacher">
+                    <div class="lesson_teacher">
                         <i class="fa fa-user" aria-hidden="true"></i>
                         <p>Instructor: <span>{{ getTeacherName(selectedLesson.teacherId) }}</span></p>
                     </div>
@@ -454,7 +454,10 @@
                 <div class="lesson_buttons">
                     <div></div>
                     <button class="btn lesson_cart" :disabled="!canAddToCart(selectedLesson)" @click="addToCart(selectedLesson)"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
-                    <button class="save_btn btn"><i class="fa fa-bookmark-o" aria-hidden="true"></i></button>
+                    <button class="save_btn btn" @click="saveLesson(selectedLesson)">
+                        <i v-if="currentUser?.savedLessonIDs.includes(selectedLesson.id)" class="fa fa-bookmark" aria-hidden="true"></i>
+                        <i v-else class="fa fa-bookmark-o" aria-hidden="true"></i>
+                    </button>
                 </div>
             </div>
 
