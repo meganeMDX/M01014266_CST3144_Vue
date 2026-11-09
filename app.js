@@ -58,6 +58,8 @@ const myApp = Vue.createApp({
             checkoutComplete:false,
             selectedHistoryOrder: "desc",
             baseURL:baseURL,
+
+            showLogOutDropDown:false
         }
     },
     async created(){
@@ -126,6 +128,10 @@ const myApp = Vue.createApp({
             this.selectedLesson = null
         },
         openLoginForm(){
+            if (this.currentUser){
+                this.showLogOutDropDown = !this.showLogOutDropDown;
+                return;
+            }
             this.clearFormsLoginRegistrationForm();
             this.showPopup = true;
             this.showRegistrationForm = false ;
@@ -208,6 +214,27 @@ const myApp = Vue.createApp({
             }catch(err){
                 console.log("Failed to register: ", err);
                 this.authenticationError = "An error occured during registration. Please try again.";
+            }
+        },
+        async logOut(){
+            try{
+                const url = `${baseURL}/login`;
+                const options = {
+                    method: 'DELETE'
+                };
+                const response = await (fetch (url, options));
+                const result = await response.json();
+
+                if (response.ok){
+                    this.currentUser = null;
+                }
+
+                this.showMessage(result.message);
+                this.showLogOutDropDown = false;
+                
+            }catch(err){
+                console.log("Failed to register: ", err);
+                this.showMessage("Error. Please log out again.")
             }
         },
         addToCart(item){

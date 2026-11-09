@@ -32,6 +32,10 @@
                         {{ currentPage === "cart" ? "Browse Items" : `Cart (${getCartCount})` }}
                     </button>
                     <button id="user" class="btn" @click="openLoginForm"><i class="fa fa-user-circle-o" aria-hidden="true"></i></button>
+                    <div v-if="showLogOutDropDown" id="logout_dropdown">
+                        <div class="dropdown_arrow"></div>
+                        <button class="btn" id="logOutBtn" @click="logOut">Log Out</button>
+                    </div>
                 </div>
             </div>
         </nav>

@@ -122,6 +122,38 @@ nav button{
     transform: scale(1.06);
 }
 
+/* logout dropdown  */
+#logout_dropdown{
+    position: absolute;
+    top:80%;
+    right:0;
+    margin-right: 5px;
+    width: 100px;
+    text-align: center;
+    background-color: #d7b1b7;
+    border-radius: 5px;
+}
+
+#logout_dropdown button{
+    font-size: 12px;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+#logout_dropdown button:hover{
+    text-decoration: underline;
+}
+
+.dropdown_arrow{
+    position: absolute;
+    top: -5px;
+    right: 28px;
+    width: 14px;
+    height: 14px;
+    background: #d7b1b7;
+    transform: rotate(45deg);
+}
+
 /* footer */
 footer{
     background-color: #2d3748;
