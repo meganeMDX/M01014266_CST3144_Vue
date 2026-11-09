@@ -66,7 +66,7 @@
                         <label>Teacher </label>
                         <select v-model="selectedTeacherId">
                             <option value="">All Teachers</option>
-                            <option v-for="teacher in teachers" :value="teacher.id">{{ teacher.title }}. {{ teacher.firstName }} {{ teacher.lastName }}</option>
+                            <option v-for="teacher in teachers" :value="teacher._id">{{ teacher.title }}. {{ teacher.firstName }} {{ teacher.lastName }}</option>
                         </select>
                     </div>
 
@@ -104,9 +104,9 @@
             <!-- display lessons and activities -->
             <div class="container">
                 <div v-if="filteredItems.length> 0" class="row lessons_row gy-4 gx-5">
-                    <div class="col-12 col-md-6 col-lg-4" v-for="lesson in filteredItems" :key="lesson.id">
+                    <div class="col-12 col-md-6 col-lg-4" v-for="lesson in filteredItems" :key="lesson._id">
                         <div class="lesson_card">
-                            <div class="image_header" :style="{ backgroundImage: `url('${lesson.imagePath}')` }">
+                            <div class="image_header" :style="{ backgroundImage: `url('${baseURL}${lesson.imagePath}')` }">
                                 <div class="lesson_tags">
                                     <span class="type_tag">{{ lesson.itemType }}</span>
                                     <span class="category_tag">{{ lesson.category }}</span>
@@ -116,7 +116,7 @@
                                 <div class="information_header">
                                     <p>{{ lesson.topic }}</p>
                                     <button class="save_btn btn" @click="saveLesson(lesson)">
-                                        <i v-if="currentUser?.savedLessonIDs.includes(lesson.id)" class="fa fa-bookmark" aria-hidden="true"></i>
+                                        <i v-if="currentUser?.savedLessonIDs.includes(lesson._id)" class="fa fa-bookmark" aria-hidden="true"></i>
                                         <i v-else class="fa fa-bookmark-o" aria-hidden="true"></i>
                                     </button>
                                 </div>
@@ -182,10 +182,10 @@
 
                 <div class="row">
                     <div class="col-12">
-                        <div v-for="order in sortedOrders" :key="order.id" class="history_order">
+                        <div v-for="order in sortedOrders" :key="order._id" class="history_order">
                             <div class="order_card">
                                 <div class="order_card_left">
-                                    <strong>Order #{{ order.id }}</strong>
+                                    <strong>Order #{{ order._id }}</strong>
                                     <div class="order_details">
                                         <div class="order_date">
                                             <i class="fa fa-clock-o" aria-hidden="true"></i>
@@ -206,20 +206,20 @@
                                     <strong>£ {{ (order.totalPrice).toFixed(2) }}</strong>
                                 </div>
                                 <!-- button to expand or collapse order items -->
-                                <button class="btn" @click="toggleOrder(order.id)">
-                                    <i v-if="expandedOrders.includes(order.id)" class="fa fa-chevron-up" aria-hidden="true"></i>
+                                <button class="btn" @click="toggleOrder(order._id)">
+                                    <i v-if="expandedOrders.includes(order._id)" class="fa fa-chevron-up" aria-hidden="true"></i>
                                     <i v-else class="fa fa-chevron-down" aria-hidden="true"></i>
                                 </button>
                             </div>
 
                             <!-- expanded order items -->
-                            <div v-if="expandedOrders.includes(order.id)" class="order_items">
+                            <div v-if="expandedOrders.includes(order._id)" class="order_items">
                                 <div v-for="item in order.itemDetails" class="order_history_items">
                                     <div class="row align-items-center">
 
                                         <div class="col-3 col-lg-2">
                                             <div class="cart_img">
-                                                <img :src="item.lesson.imagePath">
+                                                <img :src=`${baseURL}${item.lesson.imagePath}`>
                                             </div>
                                         </div>
 
@@ -252,8 +252,8 @@
                                         </div>
 
                                         <div class="col-6 col-lg-2">
-                                            <div class="order_item_rating" v-if="getLessonRating(item.lesson.id)">
-                                                <p>Your rating: <span><i class="fa fa-star" aria-hidden="true"></i>{{ getLessonRating(item.lesson.id).rating }}</span></p>
+                                            <div class="order_item_rating" v-if="getLessonRating(item.lesson._id)">
+                                                <p>Your rating: <span><i class="fa fa-star" aria-hidden="true"></i>{{ getLessonRating(item.lesson._id).rating }}</span></p>
                                                 <button class="btn edit_rating_btn" @click="openRatingPopup(item.lesson)">Edit rating</button>
                                             </div>
                                             <div v-else class="order_item_rating">
@@ -290,7 +290,7 @@
 
                                 <div class="col-3 col-sm-3 col-lg-2">
                                     <div class="cart_img">
-                                        <img :src="cartItem.itemObj.imagePath" class="img-fluid">
+                                        <img :src=`${baseURL}${cartItem.itemObj.imagePath}` class="img-fluid">
                                     </div>
                                 </div>
 
@@ -398,7 +398,7 @@
                     <h4>{{ selectedLesson.topic }}</h4>
 
                     <div class="selected_lesson_img">
-                        <img :src="selectedLesson.imagePath">
+                        <img :src=`${baseURL}${selectedLesson.imagePath}`>
                     </div>
 
                     <div class="lesson_table row g-0">
@@ -451,7 +451,7 @@
                     <div></div>
                     <button class="btn lesson_cart" :disabled="!canAddToCart(selectedLesson)" @click="addToCart(selectedLesson)"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
                     <button class="save_btn btn" @click="saveLesson(selectedLesson)">
-                        <i v-if="currentUser?.savedLessonIDs.includes(selectedLesson.id)" class="fa fa-bookmark" aria-hidden="true"></i>
+                        <i v-if="currentUser?.savedLessonIDs.includes(selectedLesson._id)" class="fa fa-bookmark" aria-hidden="true"></i>
                         <i v-else class="fa fa-bookmark-o" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -558,7 +558,7 @@
                 </div>
                 <div class="delete_popup_btns">
                     <button type="button" class="btn cancel_btn" @click="closeRemoveConfirmationPopup">Cancel</button>
-                    <button type="button" class="btn confirm_remove_btn" @click="removeFromCart(itemToDelete.id)">Remove</button>
+                    <button type="button" class="btn confirm_remove_btn" @click="removeFromCart(itemToDelete._id)">Remove</button>
                 </div>
             </div>
 

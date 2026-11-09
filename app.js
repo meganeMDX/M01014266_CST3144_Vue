@@ -1,5 +1,5 @@
 import {teachers, lessons, users, orders, ratings} from './data.js';
-
+const baseURL = "http://localhost:3000";
 const userTemp = {
         id: "001",
         name: "Christy Watson",
@@ -20,8 +20,8 @@ const myApp = Vue.createApp({
             cart:{},
             currentPage:'browsing',
 
-            lessons:lessons,
-            teachers: teachers,
+            lessons:[],
+            teachers: [],
             orders: orders,
             expandedOrders:[],
 
@@ -59,11 +59,14 @@ const myApp = Vue.createApp({
             itemToDelete: null,
 
             checkoutComplete:false,
-            selectedHistoryOrder: "desc"
+            selectedHistoryOrder: "desc",
+            baseURL:baseURL
         }
     },
-    created(){
-        this.fetchUserRatings()
+    async created(){
+        await this.fetchLessons();
+        await this.fetchTeachers();
+        this.fetchUserRatings();
     },
     methods:{
         navigateTo(pageName){
@@ -84,7 +87,7 @@ const myApp = Vue.createApp({
             window.scrollTo(0,0);
         },
         getTeacherName(teacherId){
-            let teacher = teachers.find(teacher => teacher.id === teacherId);
+            let teacher = this.teachers.find(teacher => teacher._id === teacherId);
             if (teacher === undefined){
                 return '-'
             }
@@ -157,10 +160,10 @@ const myApp = Vue.createApp({
 
         },
         addToCart(item){
-            if (this.cart[item.id] === undefined){
-                this.cart[item.id] = {itemObj: item, count: 1};
+            if (this.cart[item._id] === undefined){
+                this.cart[item._id] = {itemObj: item, count: 1};
             }else{
-                this.cart[item.id].count ++;
+                this.cart[item._id].count ++;
             }
             item.space --;
             this.showMessage("Item added to cart");
@@ -278,14 +281,14 @@ const myApp = Vue.createApp({
                 return;
             }
 
-            if (this.currentUser.savedLessonIDs.includes(lesson.id)){
+            if (this.currentUser.savedLessonIDs.includes(lesson._id)){
                 // unsave
-                this.currentUser.savedLessonIDs = this.currentUser.savedLessonIDs.filter(id => id !== lesson.id);
+                this.currentUser.savedLessonIDs = this.currentUser.savedLessonIDs.filter(id => id !== lesson._id);
                 this.showMessage(`${lesson.itemType} removed from saves`);
 
             }else{
                 // save
-                this.currentUser.savedLessonIDs.push(lesson.id);
+                this.currentUser.savedLessonIDs.push(lesson._id);
                 this.showMessage(`${lesson.itemType} saved`);
             }
         },
@@ -314,7 +317,7 @@ const myApp = Vue.createApp({
             this.selectedRating = 0;
         },
         rateItem(){
-            const existingRating = this.getLessonRating(this.ratedItem.id);
+            const existingRating = this.getLessonRating(this.ratedItem._id);
             if (existingRating){
                 // edit rating
                 this.ratedItem.rating -= existingRating.rating
@@ -324,7 +327,7 @@ const myApp = Vue.createApp({
                 // record new rating
                 const newRating = {
                     userId: this.currentUser.id,
-                    lessonId: this.ratedItem.id,
+                    lessonId: this.ratedItem._id,
                     rating: this.selectedRating,
                 }
                 ratings.push(newRating)
@@ -340,6 +343,34 @@ const myApp = Vue.createApp({
         fetchUserRatings(){
             // retrieves all ratings done by user
             this.userRatings = ratings.filter(rating => rating.userId === this.currentUser.id)
+        },
+        async fetchLessons(){
+            try{
+                const url = `${baseURL}/lessons`;
+                const response = await fetch(url);
+
+                if (!response.ok){
+                    throw new Error(`HTTP error ! status: ${response.status}`)
+                }
+                this.lessons = await response.json();
+
+            }catch(err){
+                console.log("Failed to retrieve lessons and activities: ", err);
+            }
+        },
+        async fetchTeachers(){
+            try{
+                const url = `${baseURL}/teachers`;
+                const response = await fetch(url);
+
+                if (!response.ok){
+                    throw new Error(`HTTP error ! status: ${response.status}`)
+                }
+                this.teachers = await response.json();
+
+            }catch(err){
+                console.log("Failed to retrieve teachers: ", err);
+            }
         }
     },
     computed:{
@@ -354,7 +385,7 @@ const myApp = Vue.createApp({
                     return [];
                 }
                 lessonsArr = this.lessons.filter(lesson => 
-                    this.currentUser.savedLessonIDs.includes(lesson.id)
+                    this.currentUser.savedLessonIDs.includes(lesson._id)
                 );
             }
 
@@ -464,7 +495,7 @@ const myApp = Vue.createApp({
                 ...order,
                 itemDetails: order.lessonIDs.map(item => ({
                     ...item,
-                    lesson: this.lessons.find( lesson => lesson.id === item.lessonId)
+                    lesson: this.lessons.find( lesson => lesson._id === item.lessonId)
                 }))
             }));
         },
