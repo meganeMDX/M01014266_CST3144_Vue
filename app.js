@@ -26,6 +26,10 @@ const myApp = Vue.createApp({
             expandedOrders:[],
 
             searchedText: "",
+            debouncedSearch:null,
+            searchResults:[],
+            isSearching:true,
+
             selectedTeacherId: "",
             selectedAttribute:"topic",
             selectedOrder:"asc",
@@ -60,12 +64,13 @@ const myApp = Vue.createApp({
 
             checkoutComplete:false,
             selectedHistoryOrder: "desc",
-            baseURL:baseURL
+            baseURL:baseURL,
         }
     },
     async created(){
         await this.fetchLessons();
         await this.fetchTeachers();
+        this.debouncedSearch = this.debounce(this.searchLessons, 500);
         this.fetchUserRatings();
     },
     methods:{
@@ -371,36 +376,54 @@ const myApp = Vue.createApp({
             }catch(err){
                 console.log("Failed to retrieve teachers: ", err);
             }
+        },
+        async searchLessons(){
+            try{
+                const url = `${baseURL}/lessons/search?q=${this.searchedText.trim()}`;
+                const response = await fetch(url);
+
+                if (!response.ok){
+                    throw new Error(`HTTP error ! status: ${response.status}`)
+                }
+                this.searchResults = await response.json();
+
+            }catch(err){
+                console.log("Failed to retrieve teachers: ", err);
+            }finally{
+                this.isSearching=false;
+            }
+        },
+        debounce(fn, ms){
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn(...args), ms);
+            };
+        },
+        onSearchInput(){
+            // prevent request for empty search
+            if (!this.searchedText.trim()){
+                this.isSearching=false;
+                this.searchResults = [];
+                return;
+            }
+            this.isSearching=true;
+            this.debouncedSearch();
         }
     },
     computed:{
         filteredItems(){
             let lessonsArr;
 
-            // check if user is on browsing page or saved items page
-            if (this.currentPage === 'browsing'){
-                lessonsArr = this.lessons;
+            // check if filtering result of search or all lessons
+            if (this.searchedText.trim()){
+                lessonsArr = this.searchResults;
             }else{
-                if (!this.currentUser){
-                    return [];
-                }
-                lessonsArr = this.lessons.filter(lesson => 
-                    this.currentUser.savedLessonIDs.includes(lesson._id)
-                );
+                lessonsArr = this.lessons;
             }
 
             // filter lessons
-            const searchedTextLowerCase = this.searchedText.trim().toLowerCase();
-
             const results = lessonsArr.filter(lesson => {
-                // find lessons with the searched text in its title, location, price or availability
-                const matchSearch = 
-                    !searchedTextLowerCase || 
-                    lesson.topic.toLowerCase().includes(searchedTextLowerCase) ||
-                    lesson.location.toLowerCase().includes(searchedTextLowerCase) ||
-                    String(lesson.price).includes(searchedTextLowerCase) ||
-                    String(lesson.space).includes(searchedTextLowerCase);
-
                 // filter by selected teacher
                 const matchTeacher = 
                     !this.selectedTeacherId.trim() || 
@@ -411,7 +434,7 @@ const myApp = Vue.createApp({
                     this.selectedLessonType === "all" ||
                     lesson.itemType === this.selectedLessonType;
 
-                return matchSearch && matchTeacher && matchItemType;
+                return matchTeacher && matchItemType;
             });
 
             return this.sortItems(results);
