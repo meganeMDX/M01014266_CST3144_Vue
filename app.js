@@ -74,7 +74,7 @@ const myApp = Vue.createApp({
                 this.clearCheckoutForm();
             };
 
-            if (this.currentPage === 'browsing' || this.currentPage === 'savedItems'){
+            if (this.currentPage === 'browsing'){
                 this.clearFilters();
             }
 
@@ -352,7 +352,7 @@ const myApp = Vue.createApp({
 
             this.orders.push(newOrder);
         },
-        saveLesson(lesson){
+        async saveLesson(lesson){
             // check if user is logged in
             if (!this.currentUser){
                 this.showMessage("Login to save lessons");
@@ -361,13 +361,42 @@ const myApp = Vue.createApp({
 
             if (this.currentUser.savedLessonIDs.includes(lesson._id)){
                 // unsave
-                this.currentUser.savedLessonIDs = this.currentUser.savedLessonIDs.filter(id => id !== lesson._id);
-                this.showMessage(`${lesson.itemType} removed from saves`);
+                const result = await this.updateSavedLesson(lesson._id, 'DELETE');
+                if (result.lessonUnsaved){
+                    this.currentUser.savedLessonIDs = this.currentUser.savedLessonIDs.filter(id => id !== lesson._id);
+                    this.showMessage(`${lesson.itemType} removed from saves`);
+                }else{
+                    this.showMessage(`Error unsaving ${lesson.itemType}`);
+                }
 
             }else{
                 // save
-                this.currentUser.savedLessonIDs.push(lesson._id);
-                this.showMessage(`${lesson.itemType} saved`);
+                const result = await this.updateSavedLesson(lesson._id, 'PUT');
+                if (result.lessonSaved){
+                    this.currentUser.savedLessonIDs.push(lesson._id);
+                    this.showMessage(`${lesson.itemType} saved`);
+                }else{
+                    this.showMessage(`Error saving ${lesson.itemType}`);
+                }
+            }
+        },
+        async updateSavedLesson(lessonId, method){
+            try{
+                const url = `${baseURL}/saved-lessons/${lessonId}`;
+                const options = {
+                    method: method,
+                };
+
+                const response = await (fetch (url, options));
+
+                if (!response.ok){
+                    throw new Error(`HTTP error ! status: ${response.status}`)
+                }
+
+                return await response.json();
+            }catch(err){
+                console.log("Failed to update saved lesson: ", err);
+                return false;
             }
         },
         toggleOrder(orderId){
@@ -485,8 +514,14 @@ const myApp = Vue.createApp({
         }
     },
     computed:{
-        filteredItems(){
+        displayedItems(){
             let lessonsArr;
+
+            // saved lessons
+            if (this.currentPage === 'savedItems'){
+                const savedItems = this.currentUser.savedLessonIDs.toReversed();
+                return savedItems.map(lessonID => this.lessons.find(lesson => lesson._id === lessonID));
+            }
 
             // check if filtering result of search or all lessons
             if (this.searchedText.trim()){
@@ -508,33 +543,6 @@ const myApp = Vue.createApp({
                     lesson.itemType === this.selectedLessonType;
 
                 return matchTeacher && matchItemType;
-            });
-
-            return this.sortItems(results);
-        },
-        savedItems(){
-            const searchedTextLowerCase = this.searchedText.trim().toLowerCase();
-
-            const results = this.currentUser.savedLessonIDs.filter(lesson => {
-                // find lessons with the searched text in its title, location, price or availability
-                const matchSearch = 
-                    !searchedTextLowerCase || 
-                    lesson.topic.toLowerCase().includes(searchedTextLowerCase) ||
-                    lesson.location.toLowerCase().includes(searchedTextLowerCase) ||
-                    String(lesson.price).includes(searchedTextLowerCase) ||
-                    String(lesson.space).includes(searchedTextLowerCase);
-
-                // filter by selected teacher
-                const matchTeacher = 
-                    !this.selectedTeacherId.trim() || 
-                    lesson.teacherId === this.selectedTeacherId;
-
-                // filter by lesson/activity
-                const matchItemType =
-                    this.selectedLessonType === "all" ||
-                    lesson.itemType === this.selectedLessonType;
-
-                return matchSearch && matchTeacher && matchItemType;
             });
 
             return this.sortItems(results);
