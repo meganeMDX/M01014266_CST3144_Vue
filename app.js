@@ -15,7 +15,7 @@ const myApp = Vue.createApp({
 
             lessons:[],
             teachers: [],
-            orders: orders,
+            orders: [],
             expandedOrders:[],
 
             searchedText: "",
@@ -65,6 +65,7 @@ const myApp = Vue.createApp({
     async created(){
         await this.fetchLessons();
         await this.fetchTeachers();
+
         this.debouncedSearch = this.debounce(this.searchLessons, 500);
         this.fetchUserRatings();
     },
@@ -176,7 +177,8 @@ const myApp = Vue.createApp({
 
                 if (response.ok){
                     this.currentUser = result.user;
-                    this.showMessage("Login Successful !")
+                    this.showMessage("Login Successful !");
+                    this.loadUserData();
                     this.closeLoginRegistrationForm();
                 }else{
                     this.authenticationError = result.message;
@@ -511,6 +513,24 @@ const myApp = Vue.createApp({
             }
             this.isSearching=true;
             this.debouncedSearch();
+        },
+        async fetchOrderHistory(){
+            try{
+                const url = `${baseURL}/history`;
+                const response = await fetch(url);
+
+                if (!response.ok){
+                    throw new Error(`HTTP error ! status: ${response.status}`)
+                }
+                this.orders = await response.json();
+
+            }catch(err){
+                console.log("Failed to retrieve order history: ", err);
+            }
+        },
+        // retrieve user's data after they've logged in
+        async loadUserData(){
+            await this.fetchOrderHistory();
         }
     },
     computed:{
