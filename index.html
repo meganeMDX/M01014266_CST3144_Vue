@@ -473,13 +473,13 @@
                     <div class="input_wrapper">
                         <div class="form_input">
                             <label for="user_email">Email</label>
-                            <input v-model.trim="login_email" required id="user_email" name="user_email" type="email" placeholder="Enter your an Email">
+                            <input v-model.trim="loginEmail" required id="user_email" name="user_email" type="email" placeholder="Enter your an Email">
                         </div>
                         <div class="form_input">
                             <label for="user_password">Password</label>
-                            <input v-model="login_password" required id="user_password" name="user_password" type="password" placeholder="Enter your Password">
+                            <input v-model="loginPassword" required id="user_password" name="user_password" type="password" placeholder="Enter your Password">
                         </div>
-                        <span class="warning"></span>   
+                        <span v-text="authenticationError" class="warning"></span>   
                     </div>
 
                     <div class="form_btn">
@@ -496,17 +496,17 @@
                     <div class="input_wrapper">
                         <div class="form_input">
                             <label for="full_name">Full Name</label>
-                            <input v-model.trim="register_name" required id="full_name" name="full_name" type="text" maxlength="50" placeholder="Enter your Full Name">
-                            <span v-if="register_name && !containsLettersOnly(register_name)" class="warning">Name must contain letters only</span>
+                            <input v-model.trim="registerName" required id="full_name" name="full_name" type="text" maxlength="50" placeholder="Enter your Full Name">
+                            <span v-if="registerName && !containsLettersOnly(registerName)" class="warning">Name must contain letters only</span>
                         </div>
                         <div class="form_input">
                             <label for="new_email">Email</label>
-                            <input v-model.trim="register_email" required id="new_email" name="new_email" type="email" placeholder="Enter your Email">
+                            <input v-model.trim="registerEmail" required id="new_email" name="new_email" type="email" placeholder="Enter your Email">
                             <span class="warning"></span>
                         </div>
                         <div class="form_input">
                             <label for="new_password">Password</label>
-                            <input v-model="register_password" @focus="passwordFocused = true" required id="new_password" name="new_password" type="password" placeholder="Create a Password">
+                            <input v-model="registerPassword" @focus="passwordFocused = true" required id="new_password" name="new_password" type="password" placeholder="Create a Password">
                             <ul>
                                 <li :class="[passwordFocused ? (isMinLength ? 'completed' : 'warning') : '']">Password must contain at least 8 characters.</li>
                                 <li :class="[passwordFocused ? (containsNum ? 'completed' : 'warning') : '']">Password must contain at least 1 number.</li>
@@ -514,7 +514,7 @@
                             </ul>
                             <span class="warning"></span>
                         </div>
-                        <span class="warning"></span>   
+                        <span v-text="authenticationError" class="warning"></span>   
                     </div>
 
                     <div class="form_btn btn">

@@ -1,16 +1,9 @@
 import {teachers, lessons, users, orders, ratings} from './data.js';
 const baseURL = "http://localhost:3000";
-const userTemp = {
-        id: "001",
-        name: "Christy Watson",
-        email: "christy@gmail.com",
-        password: "C12345678",
-        savedLessonIDs: ["001"]
-    };
 
 const numberRegx = /\d/;
 const upperCaseRegex = /(?=.*[A-Z])/;
-const onlyLettersRegex = /^[A-Za-z]+$/;
+const onlyLettersRegex = /^[A-Za-z ]+$/;
 const onlyNumbersRegex = /^\d+$/;
 
 const {createApp} = Vue
@@ -43,14 +36,14 @@ const myApp = Vue.createApp({
             selectedRating: 0,
 
 
-            login_email: "",
-            login_password:"",
-            register_name: "",
-            register_email: "",
-            register_password: "",
-            // currentUser:null,
-            currentUser:userTemp,
+            loginEmail: "",
+            loginPassword:"",
+            registerName: "",
+            registerEmail: "",
+            registerPassword: "",
+            currentUser:null,
             userRatings: [],
+            authenticationError:"",
 
             passwordFocused: false,
 
@@ -151,18 +144,71 @@ const myApp = Vue.createApp({
             this.showRegistrationForm = false ;
         },
         clearFormsLoginRegistrationForm(){
-            this.login_email = "",
-            this.login_password = "",
-            this.register_name = "",
-            this.register_email = "",
-            this.register_password = "",
+            this.loginEmail = "",
+            this.loginPassword = "",
+            this.registerName = "",
+            this.registerEmail = "",
+            this.registerPassword = "",
             this.passwordFocused = false;
+            this.authenticationError ="";
         },
-        loginUser(){
+        async loginUser(){
+            try{
+                const url = `${baseURL}/login`;
+                const options = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: this.loginEmail,
+                        password: this.loginPassword
+                    })
+                };
+                const response = await (fetch (url, options));
+                const result = await response.json();
 
+                if (response.ok){
+                    this.currentUser = result.user;
+                    this.showMessage("Login Successful !")
+                    this.closeLoginRegistrationForm();
+                }else{
+                    this.authenticationError = result.message;
+                }
+            }catch(err){
+                console.log("Failed to login: ", err);
+                this.authenticationError = "An error occured during login. Please try again.";
+            }
         },
-        registerUser(){
+        async registerUser(){
+            try{
+                const url = `${baseURL}/register`;
+                const options = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fullName: this.registerName,
+                        email: this.registerEmail,
+                        password: this.registerPassword
+                    })
+                };
+                const response = await (fetch (url, options));
+                const result = await response.json();
 
+                if (response.ok){
+                    this.currentUser = result.user;
+                    this.showMessage("Registration Successful !")
+                    this.closeLoginRegistrationForm();
+
+                }else{
+                    this.authenticationError = result.message;
+                }
+            }catch(err){
+                console.log("Failed to register: ", err);
+                this.authenticationError = "An error occured during registration. Please try again.";
+            }
         },
         addToCart(item){
             if (this.cart[item._id] === undefined){
@@ -266,7 +312,7 @@ const myApp = Vue.createApp({
             });
 
             const newOrder={
-                userId: this.currentUser.id,
+                userId: this.currentUser._id,
                 name: this.checkout_full_name,
                 phoneNumber: this.checkout_phone_number,
                 lessonIDs: lessonsOrdered,
@@ -308,7 +354,7 @@ const myApp = Vue.createApp({
         getLessonRating(lessonId){
             // get rating that user gave to a lesson
             return this.userRatings.find(rating => 
-                rating.userId === this.currentUser.id &&
+                rating.userId === this.currentUser._id &&
                 rating.lessonId === lessonId
             );
         },
@@ -331,7 +377,7 @@ const myApp = Vue.createApp({
             }else{
                 // record new rating
                 const newRating = {
-                    userId: this.currentUser.id,
+                    userId: this.currentUser._id,
                     lessonId: this.ratedItem._id,
                     rating: this.selectedRating,
                 }
@@ -347,7 +393,7 @@ const myApp = Vue.createApp({
         },
         fetchUserRatings(){
             // retrieves all ratings done by user
-            this.userRatings = ratings.filter(rating => rating.userId === this.currentUser.id)
+            this.userRatings = ratings.filter(rating => rating.userId === this.currentUser._id)
         },
         async fetchLessons(){
             try{
@@ -472,21 +518,21 @@ const myApp = Vue.createApp({
         },
         // password checks
         isMinLength(){
-            return this.register_password.length >= 8;
+            return this.registerPassword.length >= 8;
         },
         containsNum(){
-            return numberRegx.test(this.register_password);
+            return numberRegx.test(this.registerPassword);
         },
         containsUpperCase(){
-            return upperCaseRegex.test(this.register_password);
+            return upperCaseRegex.test(this.registerPassword);
         },
         canAttemptLogin(){
-            return (this.login_email && this.login_password);
+            return (this.loginEmail && this.loginPassword);
         },
         canAttemptRegistration(){
             return (
-                this.register_name && this.register_email && this.register_password &&
-                this.containsLettersOnly(this.register_name) &&
+                this.registerName && this.registerEmail && this.registerPassword &&
+                this.containsLettersOnly(this.registerName) &&
                 this.isMinLength && this.containsNum && this.containsUpperCase
             );
         },
