@@ -67,7 +67,6 @@ const myApp = Vue.createApp({
         await this.fetchTeachers();
 
         this.debouncedSearch = this.debounce(this.searchLessons, 500);
-        this.fetchUserRatings();
     },
     methods:{
         navigateTo(pageName){
@@ -449,9 +448,20 @@ const myApp = Vue.createApp({
             }
             this.closeRatingPopup();
         },
-        fetchUserRatings(){
+        async fetchUserRatings(){
             // retrieves all ratings done by user
-            this.userRatings = ratings.filter(rating => rating.userId === this.currentUser._id)
+            try{
+                const url = `${baseURL}/ratings`;
+                const response = await fetch(url);
+
+                if (!response.ok){
+                    throw new Error(`HTTP error ! status: ${response.status}`)
+                }
+                this.userRatings = await response.json();
+
+            }catch(err){
+                console.log("Failed to retrieve ratings from user: ", err);
+            }
         },
         async fetchLessons(){
             try{
@@ -531,6 +541,7 @@ const myApp = Vue.createApp({
         // retrieve user's data after they've logged in
         async loadUserData(){
             await this.fetchOrderHistory();
+            await this.fetchUserRatings();
         }
     },
     computed:{
