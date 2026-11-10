@@ -1,4 +1,3 @@
-import {teachers, lessons, users, orders, ratings} from './data.js';
 const baseURL = "http://localhost:3000";
 
 const numberRegx = /\d/;
