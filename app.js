@@ -50,8 +50,10 @@ const myApp = Vue.createApp({
             messageText: "",
             showMessagePopup : false,
 
-            checkout_full_name: "",
-            checkout_phone_number: "",
+            checkoutName: "",
+            checkoutPhoneNumber: "",
+            checkoutErrorMsg:"",
+            checkoutError: false,
 
             itemToDelete: null,
 
@@ -302,19 +304,42 @@ const myApp = Vue.createApp({
                 this.messageText = "";
             }, 1500);
         },
-        checkout(){
+        async checkout(){
+            this.checkoutErrorMsg = "";
             if (this.getCartCount === 0 || !this.canCheckout){
                 this.showMessage("Please check your details and cart");
                 return;
             }
             
-            this.saveOrder();
+            const orderSaved = await this.saveOrder();
+            if (!orderSaved){
+                // show error popup
+                this.checkoutError = true;
+                this.showPopup=true;
+                return;
+            }
+            for (const [lessonId, value] of Object.entries(this.cart)){
+                let lessonUpdated = await this.updateLessonAvailability(lessonId, value.itemObj.space);
+                if (!lessonUpdated){
+                    this.checkoutError = true;
+                    this.showPopup=true;
+                    return;
+                }
+            }
 
-            // display message
+            // display confirmation message
             this.checkoutComplete = true;
             this.showPopup=true;
         },
         closeCheckoutPopup(){
+            // for checkout error popup
+            if (this.checkoutError){
+                this.showPopup=false;
+                this.checkoutError = false;
+                return;
+            }
+
+            // for checkout confirmation popup
             this.checkoutComplete = false;
             this.showPopup=false;
             
@@ -327,31 +352,86 @@ const myApp = Vue.createApp({
             return onlyLettersRegex.test(name);
         },
         clearCheckoutForm(){
-            this.checkout_full_name = "";
-            this.checkout_phone_number= "";
+            this.checkoutName = "";
+            this.checkoutPhoneNumber= "";
         },
-        saveOrder(){
+        async saveOrder(){
             const lessonsOrdered = Object.entries(this.cart).map(( [key, value] ) => {
                 return {
                     lessonId: key,
                     space: value.count
                 };
-
             });
 
-            const newOrder={
-                userId: this.currentUser._id,
-                name: this.checkout_full_name,
-                phoneNumber: this.checkout_phone_number,
-                lessonIDs: lessonsOrdered,
-                orderDate: new Date().toISOString().split('T')[0],
-                totalPrice: this.getCartTotal
+            const orderDetails={
+                name: this.checkoutName,
+                phoneNumber: this.checkoutPhoneNumber,
+                lessons: lessonsOrdered,
             }
 
             // save order to database
+            try{
+                const url = `${baseURL}/order`;
+                const options = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({orderDetails})
+                };
+                const response = await (fetch (url, options));
+                const result = await response.json();
 
+                if (!response.ok){
+                    this.checkoutErrorMsg = result.message || "Failed to save order";
+                    return false;
+                }
 
-            this.orders.push(newOrder);
+                if (result.success){
+                    this.orders.push(result.recordedOrder);
+                    return true;
+                }
+
+                this.checkoutErrorMsg = result.message;
+                return false;
+
+            }catch(err){
+                console.log("Failed to save order: ", err);
+                this.checkoutErrorMsg =  "Unable to connect to server. Please try again";    
+                return false;
+            }
+        },
+        async updateLessonAvailability(lessonId, spaceLeft){
+            try{
+                const url = `${baseURL}/lesson/${lessonId}`;
+                const options = {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({'space': spaceLeft})
+                };
+                const response = await (fetch (url, options));
+                const result = await response.json();
+
+                if (!response.ok){
+                    this.checkoutErrorMsg = result.message || "Failed to update lesson availability.";
+                    return false;
+                }
+
+                if (result.success){
+                    return true;
+                }
+
+                this.checkoutErrorMsg = result.message;
+                return false;
+
+            }catch(err){
+                console.log("Failed to update lesson availability: ", err);
+                this.checkoutErrorMsg =  "Unable to connect to server. Please try again.";    
+                return false;
+            }
+
         },
         async saveLesson(lesson){
             // check if user is logged in
@@ -613,7 +693,7 @@ const myApp = Vue.createApp({
         },
         // // name check
         containsNumbersOnly(){
-            return onlyNumbersRegex.test(this.checkout_phone_number);
+            return onlyNumbersRegex.test(this.checkoutPhoneNumber);
         },
         // password checks
         isMinLength(){
@@ -653,9 +733,9 @@ const myApp = Vue.createApp({
         },
         canCheckout(){
             return (
-                this.containsLettersOnly(this.checkout_full_name) && 
+                this.containsLettersOnly(this.checkoutName) && 
                 this.containsNumbersOnly &&
-                this.checkout_phone_number.length >= 7
+                this.checkoutPhoneNumber.length >= 7
             );
         },
         ordersWithLessonDetails(){

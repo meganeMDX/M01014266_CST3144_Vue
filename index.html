@@ -355,8 +355,8 @@
                             <div class="input_wrapper">
                                 <div class="form_input">
                                     <label for="checkout_name">Full Name</label>
-                                    <input v-model.trim="checkout_full_name" required id="checkout_name" name="checkout_name" type="text" maxlength="50" placeholder="Enter your name">
-                                    <span  v-if="checkout_full_name && !containsLettersOnly(checkout_full_name)" class="warning">Name must contain letters only</span>
+                                    <input v-model.trim="checkoutName" required id="checkout_name" name="checkout_name" type="text" maxlength="50" placeholder="Enter your name">
+                                    <span  v-if="checkoutName && !containsLettersOnly(checkoutName)" class="warning">Name must contain letters only</span>
                                 </div>
                                 <div class="form_input">
                                     <label for="checkout_tel_number">Phone Number</label>
@@ -579,6 +579,17 @@
                 <div>
                     <p>Your Order for {{ getCartCount }} lesson(s) has successfully been submitted.</p>
                     <p>You will now be redirected to the Browsing Page.</p>
+                </div>
+                <button type="button" class="btn cancel_btn" @click="closeCheckoutPopup">Close</button>
+            </div>
+
+            <!-- checkout error message  -->
+            <div v-if="checkoutError" class="checkout_message_popup">
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                <h2>Unsuccessful Transaction</h2>
+                <div>
+                    <p>{{ checkoutErrorMsg }}</p>
+                    <p>Please try again.</p>
                 </div>
                 <button type="button" class="btn cancel_btn" @click="closeCheckoutPopup">Close</button>
             </div>
