@@ -554,7 +554,7 @@
                 </div>
                 <div class="rating_popup_btns">
                     <button type="button" class="btn cancel_btn" @click="closeRatingPopup">Cancel</button>
-                    <button type="button" class="btn confirm_rating_btn" @click="rateItem" :disabled="selectedRating === 0">Confirm</button>
+                    <button type="button" class="btn confirm_rating_btn" @click="rateItem" :disabled="selectedRating === 0 || selectedRating === getLessonRating(ratedItem._id)?.rating ">Confirm</button>
                 </div>
             </div>
 

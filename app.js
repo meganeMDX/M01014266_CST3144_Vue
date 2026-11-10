@@ -424,29 +424,62 @@ const myApp = Vue.createApp({
             this.ratedItem = null;
             this.selectedRating = 0;
         },
-        rateItem(){
-            const existingRating = this.getLessonRating(this.ratedItem._id);
-            if (existingRating){
-                // edit rating
-                this.ratedItem.rating -= existingRating.rating
-                existingRating.rating = this.selectedRating;
-                this.ratedItem.rating += this.selectedRating
-            }else{
-                // record new rating
-                const newRating = {
-                    userId: this.currentUser._id,
-                    lessonId: this.ratedItem._id,
-                    rating: this.selectedRating,
-                }
-                ratings.push(newRating)
+        async rateItem(){
+            try{
+                const existingRating = this.getLessonRating(this.ratedItem._id);
 
-                this.userRatings.push(newRating)
-                
-                // update lesson rating
-                this.ratedItem.rating += this.selectedRating
-                this.ratedItem.ratingCount += 1
+                const url = `${baseURL}/ratings`;
+                const options = {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        lessonId: this.ratedItem._id,
+                        rating: this.selectedRating
+                    })
+                };
+
+                const response = await (fetch (url, options));
+                const result = await response.json();
+
+                if (!response.ok){
+                    throw new Error(`HTTP error ! status: ${response.status}`)
+                }
+                if (!result.success){
+                    this.showMessage(result.message);
+                    return;
+                }
+
+                if (existingRating){
+                    const ratingDiff = this.selectedRating - existingRating.rating;
+
+                    // replace existing rating object
+                    const index = this.userRatings.indexOf(existingRating);
+                    this.userRatings[index]=result.ratingObj;
+
+                    // update lesson rating total
+                    this.ratedItem.ratingTotal += ratingDiff;
+
+                    this.closeRatingPopup();
+                    this.showMessage("Rating updated!");
+
+                }else{
+                    // add new rating object
+                    this.userRatings.push(result.ratingObj);
+                    
+                    // update lesson rating
+                    this.ratedItem.ratingTotal += this.selectedRating;
+                    this.ratedItem.ratingCount += 1;
+
+                    this.closeRatingPopup();
+                    this.showMessage("Rating recorded!");
+                }
+
+            }catch(err){
+                console.log("Failed to rate item: ", err);
+                this.showMessage("Failed to update rating. Please try again.");
             }
-            this.closeRatingPopup();
         },
         async fetchUserRatings(){
             // retrieves all ratings done by user
