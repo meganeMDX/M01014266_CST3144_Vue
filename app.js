@@ -60,7 +60,9 @@ const myApp = Vue.createApp({
             selectedHistoryOrder: "desc",
             baseURL:baseURL,
 
-            showLogOutDropDown:false
+            showLogOutDropDown:false,
+
+            enrolmentNum: null
         }
     },
     async created(){
@@ -120,13 +122,15 @@ const myApp = Vue.createApp({
             this.selectedAttribute = "topic";
             this.selectedOrder = "asc";
         },
-        openLessonPopup(selectedLesson){
+        async openLessonPopup(selectedLesson){
             this.selectedLesson = selectedLesson
             this.showPopup = true;
+            this.enrolmentNum = await this.getEnrollmentNumber(selectedLesson._id);
         },
         closeLessonPopup(){
             this.showPopup = false;
-            this.selectedLesson = null
+            this.selectedLesson = null;
+            this.enrolmentNum = null;
         },
         openLoginForm(){
             if (this.currentUser){
@@ -654,6 +658,22 @@ const myApp = Vue.createApp({
         async loadUserData(){
             await this.fetchOrderHistory();
             await this.fetchUserRatings();
+        },
+        async getEnrollmentNumber(lessonId){
+            try{
+                const url = `${baseURL}/enrolment/${lessonId}`;
+                const response = await fetch(url);
+
+                if (!response.ok){
+                    throw new Error(`HTTP error ! status: ${response.status}`)
+                }
+                const enrolmentNumber = await response.json();
+                return enrolmentNumber;
+
+            }catch(err){
+                console.log("Failed to retrieve order history: ", err);
+                return null;
+            }
         }
     },
     computed:{
