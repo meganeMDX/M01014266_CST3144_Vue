@@ -144,7 +144,7 @@
                                 <div class="lesson_footer">
                                     <strong class="lesson_price">£ {{ (lesson.price).toFixed(2) }}</strong>
                                     <div class="lesson_buttons">
-                                        <button class="btn lesson_cart" :disabled="!canAddToCart(lesson)" @click="addToCart(lesson)"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
+                                        <button class="btn lesson_cart" :disabled="!canAddToCart(lesson)" @click="addToCart(lesson._id)"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
                                         <button @click="openLessonPopup(lesson)" class="btn lesson_info"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
                                     </div>
                                 </div>
@@ -459,7 +459,7 @@
                 
                 <div class="lesson_buttons">
                     <div></div>
-                    <button class="btn lesson_cart" :disabled="!canAddToCart(selectedLesson)" @click="addToCart(selectedLesson)"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
+                    <button class="btn lesson_cart" :disabled="!canAddToCart(selectedLesson)" @click="addToCart(selectedLesson._id)"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
                     <button class="save_btn btn" @click="saveLesson(selectedLesson)">
                         <i v-if="currentUser?.savedLessonIDs.includes(selectedLesson._id)" class="fa fa-bookmark" aria-hidden="true"></i>
                         <i v-else class="fa fa-bookmark-o" aria-hidden="true"></i>

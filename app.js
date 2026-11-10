@@ -243,7 +243,8 @@ const myApp = Vue.createApp({
                 this.showMessage("Error. Please log out again.")
             }
         },
-        addToCart(item){
+        addToCart(itemID){
+            const item = this.lessons.find(l => l._id === itemID);
             if (this.cart[item._id] === undefined){
                 this.cart[item._id] = {itemObj: item, count: 1};
             }else{
@@ -688,7 +689,14 @@ const myApp = Vue.createApp({
 
             // check if filtering result of search or all lessons
             if (this.searchedText.trim()){
-                lessonsArr = this.searchResults;
+                // update lesson space left
+                lessonsArr = this.searchResults.map(lesson => {
+                    const cartItem = this.cart[lesson._id];
+                    return{
+                        ...lesson,
+                        space: cartItem? lesson.space - cartItem.count : lesson.space
+                    }
+                });
             }else{
                 lessonsArr = this.lessons;
             }
