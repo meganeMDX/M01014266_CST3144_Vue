@@ -584,6 +584,14 @@
                 </div>
             </div>
 
+            <!-- prompt to login before proceeding with checkout -->
+            <div v-if="loginCheckoutPrompt" class="checkout_message_popup">
+                <i class="fa fa-sign-in" aria-hidden="true"></i>
+                <h2>Login Required</h2>
+                <p>Please log in to your account before proceeding with checkout.</p>
+                <button type="button" class="btn cancel_btn" @click="closeCheckoutPopup">Close</button>
+            </div>
+            
             <!-- checkout confirmation message  -->
             <div v-if="checkoutComplete" class="checkout_message_popup">
                 <i class="fa fa-check-circle-o" aria-hidden="true"></i>

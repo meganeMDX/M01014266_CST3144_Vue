@@ -55,6 +55,7 @@ const myApp = Vue.createApp({
 
             itemToDelete: null,
 
+            loginCheckoutPrompt: false,
             checkoutComplete:false,
             selectedHistoryOrder: "desc",
             baseURL:baseURL,
@@ -317,6 +318,14 @@ const myApp = Vue.createApp({
         },
         async checkout(){
             this.checkoutErrorMsg = "";
+
+            // check if user is logged in
+            if (!this.currentUser){
+                this.loginCheckoutPrompt = true;
+                this.showPopup=true;
+                return;
+            }
+
             if (this.getCartCount === 0 || !this.canCheckout){
                 this.showMessage("Please check your details and cart");
                 return;
@@ -343,16 +352,23 @@ const myApp = Vue.createApp({
             this.showPopup=true;
         },
         closeCheckoutPopup(){
+
+            this.showPopup=false;
+
             // for checkout error popup
             if (this.checkoutError){
-                this.showPopup=false;
                 this.checkoutError = false;
+                return;
+            }
+
+            // for logged out users
+            if (this.loginCheckoutPrompt){
+                this.loginCheckoutPrompt = false;
                 return;
             }
 
             // for checkout confirmation popup
             this.checkoutComplete = false;
-            this.showPopup=false;
             
             // clear cart
             this.cart = {}
