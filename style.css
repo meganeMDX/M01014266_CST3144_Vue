@@ -762,8 +762,8 @@ footer hr{
     padding: 10px 5px 10px 5px ;
 }
 
-/* display if user removed all items while on cart page */
-.all_items_removed_display{
+/* display when there is no items or user is not logged in */
+.no_items_display{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -774,32 +774,32 @@ footer hr{
     padding: 20px;
 }
 
-.all_items_removed_display i{
+.no_items_display i{
     font-size: 12rem;
     color: #c88ea7;
 }
 
-.all_items_removed_display h4{
+.no_items_display h4{
     color: #000000;
     margin: 0;
 }
 
-.all_items_removed_display p{
+.no_items_display p{
     font-size: 17px;
 }
 
-.all_items_removed_display button{
+.no_items_display button{
     background-color: #c88ea7;
     color: #ffffff;
-    font-size: 16px;
+    font-size: 18px;
     width: 250px;
-    padding: 15px 10px;
+    padding: 10px 10px;
     margin-top: 15px;
     border-radius: 15px;
     transition: 0.2s ease;
 }
 
-.all_items_removed_display button:hover{
+.no_items_display button:hover{
     background-color: #c17898;
 }
 

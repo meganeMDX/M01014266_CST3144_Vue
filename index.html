@@ -179,7 +179,15 @@
         <!-- order history page  -->
         <div v-if="currentPage === 'history'" id="historyPage">
             <h2 class="page_headers">Order History</h2>
-            <div v-if="orders.length > 0" class="history_content">
+
+            <div v-if="!currentUser" class="no_items_display">
+                <i class="fa fa-history" aria-hidden="true"></i>
+                <h4>Oops, looks like you're not logged in</h4>
+                <p>Login to view your orders</p>
+                <button class="btn" @click="openLoginForm">Login</button>
+            </div>
+
+            <div v-else-if="orders.length > 0" class="history_content">
 
                 <div class="history_filter">
                     <label>Order By: </label>
@@ -198,7 +206,7 @@
                                     <div class="order_details">
                                         <div class="order_date">
                                             <i class="fa fa-clock-o" aria-hidden="true"></i>
-                                            <p>{{ order.orderDate }}</p>
+                                            <p>{{ (new Date(order.orderDate)).toLocaleDateString('en-GB', {day: '2-digit', month:'short', year:'numeric'}) }}</p>
                                         </div>
                                         <div class="order_username">
                                             <i class="fa fa-user" aria-hidden="true"></i>
@@ -278,7 +286,7 @@
                 </div>
             </div>
 
-            <div v-else class="all_items_removed_display">
+            <div v-else class="no_items_display">
                 <i class="fa fa-history" aria-hidden="true"></i>
                 <h4>Oops, you don't have any previous orders</h4>
                 <button class="btn" @click="navigateTo('browsing')">Browse Lessons & Activities</button>
