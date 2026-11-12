@@ -783,7 +783,7 @@ const myApp = Vue.createApp({
         ordersWithLessonDetails(){
             return this.orders.map(order => ({
                 ...order,
-                itemDetails: order.lessonIDs.map(item => ({
+                itemDetails: order.lessons.map(item => ({
                     ...item,
                     lesson: this.lessons.find( lesson => lesson._id === item.lessonId)
                 }))
