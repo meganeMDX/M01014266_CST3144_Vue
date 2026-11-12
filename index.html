@@ -50,133 +50,141 @@
 
             <h2 v-if="currentPage === 'savedItems'" class="page_headers">Saved Lessons &amp; Activities</h2>
 
-            <div v-if="currentPage === 'browsing'" class="filters_section">
-                <!-- searchbar -->
-                <div class="search_wrapper">
-                    <i class="fa fa-search" aria-hidden="true"></i>
-                    <input name="searchbar" v-model="searchedText" class="searchbar" type="text" placeholder="Search for lessons or activities..." @input="onSearchInput">
-                </div>
-
-                <!-- filter by type -->
-                <div class="filter_type">
-                    <button @click="setSelectedItemType('all')" :class="{ active: selectedLessonType === 'all' }" class="btn">View All</button>
-                    <button @click="setSelectedItemType('lesson')" :class="{ active: selectedLessonType === 'lesson' }" class="btn">Lessons</button>
-                    <button @click="setSelectedItemType('activity')" :class="{ active: selectedLessonType === 'activity' }" class="btn">Activities</button>
-                </div>
-
-                <!-- filters & sorting -->
-                <div class="filters_sorting row g-4">
-                    <div class="teacher_filter col-12 col-md-4">
-                        <label>Teacher </label>
-                        <select v-model="selectedTeacherId">
-                            <option value="">All Teachers</option>
-                            <option v-for="teacher in teachers" :value="teacher._id">{{ teacher.title }}. {{ teacher.firstName }} {{ teacher.lastName }}</option>
-                        </select>
-                    </div>
-
-                    <div class="attribute_filter col-12 col-md-4">
-                        <label>Sort By</label>
-                        <select v-model="selectedAttribute">
-                            <option value="topic">Subject</option>
-                            <option value="location">Location</option>
-                            <option value="price">Price</option>
-                            <option value="space">Spaces</option>
-                        </select>
-                    </div>
-
-                    <div class="sorting col-12 col-md-4">
-                        <label>Order By</label>
-                        <select v-model="selectedOrder">
-                            <option value="asc">Ascending</option>
-                            <option value="desc">Descending</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="clear_filters">
-                    <button @click="clearFilters" class="btn">
-                        <i class="fa fa-filter" aria-hidden="true"></i>
-                        Clear Filters
-                    </button>
-                </div>
+            <!-- if there's an error loading lessons from db -->
+            <div v-if="currentPage === 'browsing' && lessons.length === 0" class="no_results">
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                <h4>Sorry, unable to load lessons at the moment</h4>
+                <p>Please try again later...</p>
             </div>
 
-            <div class="results_found" v-if="!(currentPage === 'savedItems' & displayedItems.length === 0)">
-                <span>{{ displayedItems.length }} {{ currentPage === "browsing" ? "Results Found" : "Saved Items" }} </span>
-            </div>
+            <div v-else>
+                <div v-if="currentPage === 'browsing'" class="filters_section">
+                    <!-- searchbar -->
+                    <div class="search_wrapper">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                        <input name="searchbar" v-model="searchedText" class="searchbar" type="text" placeholder="Search for lessons or activities..." @input="onSearchInput">
+                    </div>
 
-            <!-- display lessons and activities -->
-            <div class="container">
-                <div v-if="displayedItems.length > 0" class="row lessons_row gy-4 gx-5">
-                    <div class="col-12 col-md-6 col-lg-4" v-for="lesson in displayedItems" :key="lesson._id">
-                        <div class="lesson_card">
-                            <div class="image_header" :style="{ backgroundImage: `url('${baseURL}${lesson.imagePath}')` }">
-                                <div class="lesson_tags">
-                                    <span class="type_tag">{{ lesson.itemType }}</span>
-                                    <span class="category_tag">{{ lesson.category }}</span>
-                                </div>
-                            </div>
-                            <div class="lesson_information">
-                                <div class="information_header">
-                                    <p>{{ lesson.topic }}</p>
-                                    <button class="save_btn btn" @click="saveLesson(lesson)">
-                                        <i v-if="currentUser?.savedLessonIDs.includes(lesson._id)" class="fa fa-bookmark" aria-hidden="true"></i>
-                                        <i v-else class="fa fa-bookmark-o" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                                <div class="lesson_teacher">
-                                    <i class="fa fa-user" aria-hidden="true"></i>
-                                    <p>{{ getTeacherName(lesson.teacherId) }}</p>
-                                </div>
-                                <div class="lesson_location_spaces">
-                                    <div class="lesson_location">
-                                        <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                        <p>{{ lesson.location }}</p>
+                    <!-- filter by type -->
+                    <div class="filter_type">
+                        <button @click="setSelectedItemType('all')" :class="{ active: selectedLessonType === 'all' }" class="btn">View All</button>
+                        <button @click="setSelectedItemType('lesson')" :class="{ active: selectedLessonType === 'lesson' }" class="btn">Lessons</button>
+                        <button @click="setSelectedItemType('activity')" :class="{ active: selectedLessonType === 'activity' }" class="btn">Activities</button>
+                    </div>
+
+                    <!-- filters & sorting -->
+                    <div class="filters_sorting row g-4">
+                        <div class="teacher_filter col-12 col-md-4">
+                            <label>Teacher </label>
+                            <select v-model="selectedTeacherId">
+                                <option value="">All Teachers</option>
+                                <option v-for="teacher in teachers" :value="teacher._id">{{ teacher.title }}. {{ teacher.firstName }} {{ teacher.lastName }}</option>
+                            </select>
+                        </div>
+
+                        <div class="attribute_filter col-12 col-md-4">
+                            <label>Sort By</label>
+                            <select v-model="selectedAttribute">
+                                <option value="topic">Subject</option>
+                                <option value="location">Location</option>
+                                <option value="price">Price</option>
+                                <option value="space">Spaces</option>
+                            </select>
+                        </div>
+
+                        <div class="sorting col-12 col-md-4">
+                            <label>Order By</label>
+                            <select v-model="selectedOrder">
+                                <option value="asc">Ascending</option>
+                                <option value="desc">Descending</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="clear_filters">
+                        <button @click="clearFilters" class="btn">
+                            <i class="fa fa-filter" aria-hidden="true"></i>
+                            Clear Filters
+                        </button>
+                    </div>
+                </div>
+
+                <div class="results_found" v-if="!(currentPage === 'savedItems' & displayedItems.length === 0)">
+                    <span>{{ displayedItems.length }} {{ currentPage === "browsing" ? "Results Found" : "Saved Items" }} </span>
+                </div>
+
+                <!-- display lessons and activities -->
+                <div class="container">
+                    <div v-if="displayedItems.length > 0" class="row lessons_row gy-4 gx-5">
+                        <div class="col-12 col-md-6 col-lg-4" v-for="lesson in displayedItems" :key="lesson._id">
+                            <div class="lesson_card">
+                                <div class="image_header" :style="{ backgroundImage: `url('${baseURL}${lesson.imagePath}')` }">
+                                    <div class="lesson_tags">
+                                        <span class="type_tag">{{ lesson.itemType }}</span>
+                                        <span class="category_tag">{{ lesson.category }}</span>
                                     </div>
-                                    <p class="lesson_space">Spots Left: <span v-text="lesson.space"></span></p>
                                 </div>
-                                <hr>
-                                <div class="lesson_rating">
-                                    <i class="fa fa-star" :class="{ 'no_rating' : lesson.ratingCount === 0}" aria-hidden="true"></i>
-                                    <span v-if="lesson.ratingCount > 0">{{ (lesson.totalRating/lesson.ratingCount).toFixed(1) }} ({{ lesson.ratingCount }})</span>
-                                    <span v-else class="no_rating">No Ratings</span>
-                                </div>
-                                <div class="lesson_footer">
-                                    <strong class="lesson_price">£ {{ (lesson.price).toFixed(2) }}</strong>
-                                    <div class="lesson_buttons">
-                                        <button class="btn lesson_cart" :disabled="!canAddToCart(lesson)" @click="addToCart(lesson._id)"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
-                                        <button @click="openLessonPopup(lesson)" class="btn lesson_info"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
+                                <div class="lesson_information">
+                                    <div class="information_header">
+                                        <p>{{ lesson.topic }}</p>
+                                        <button class="save_btn btn" @click="saveLesson(lesson)">
+                                            <i v-if="currentUser?.savedLessonIDs.includes(lesson._id)" class="fa fa-bookmark" aria-hidden="true"></i>
+                                            <i v-else class="fa fa-bookmark-o" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                    <div class="lesson_teacher">
+                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                        <p>{{ getTeacherName(lesson.teacherId) }}</p>
+                                    </div>
+                                    <div class="lesson_location_spaces">
+                                        <div class="lesson_location">
+                                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                            <p>{{ lesson.location }}</p>
+                                        </div>
+                                        <p class="lesson_space">Spots Left: <span v-text="lesson.space"></span></p>
+                                    </div>
+                                    <hr>
+                                    <div class="lesson_rating">
+                                        <i class="fa fa-star" :class="{ 'no_rating' : lesson.ratingCount === 0}" aria-hidden="true"></i>
+                                        <span v-if="lesson.ratingCount > 0">{{ (lesson.totalRating/lesson.ratingCount).toFixed(1) }} ({{ lesson.ratingCount }})</span>
+                                        <span v-else class="no_rating">No Ratings</span>
+                                    </div>
+                                    <div class="lesson_footer">
+                                        <strong class="lesson_price">£ {{ (lesson.price).toFixed(2) }}</strong>
+                                        <div class="lesson_buttons">
+                                            <button class="btn lesson_cart" :disabled="!canAddToCart(lesson)" @click="addToCart(lesson._id)"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
+                                            <button @click="openLessonPopup(lesson)" class="btn lesson_info"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div v-else-if="currentPage === 'browsing' && isSearching" class="no_results">
-                    <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"></div>
-                    <h4>Searching...</h4>
-                </div>
+                    <div v-else-if="currentPage === 'browsing' && isSearching" class="no_results">
+                        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"></div>
+                        <h4>Searching...</h4>
+                    </div>
 
-                <div v-else-if="currentPage === 'savedItems' && !currentUser"  class="no_items_display">
-                    <i class="fa fa-bookmark" aria-hidden="true"></i>
-                    <h4>Oops, looks like you're not logged in</h4>
-                    <p>Login to view your saved lessons and activities</p>
-                    <button class="btn" @click="openLoginForm">Login</button>
-                </div>
+                    <div v-else-if="currentPage === 'savedItems' && !currentUser"  class="no_items_display">
+                        <i class="fa fa-bookmark" aria-hidden="true"></i>
+                        <h4>Oops, looks like you're not logged in</h4>
+                        <p>Login to view your saved lessons and activities</p>
+                        <button class="btn" @click="openLoginForm">Login</button>
+                    </div>
 
-                <div v-else-if="currentPage === 'savedItems' && currentUser.savedLessonIDs.length === 0" class="no_items_display">
-                    <i class="fa fa-bookmark" aria-hidden="true"></i>
-                    <h4>You have not saved any lessons or activities yet</h4>
-                    <button class="btn" @click="navigateTo('browsing')">Browse Lessons & Activities</button>
-                </div>
+                    <div v-else-if="currentPage === 'savedItems' && currentUser.savedLessonIDs.length === 0" class="no_items_display">
+                        <i class="fa fa-bookmark" aria-hidden="true"></i>
+                        <h4>You have not saved any lessons or activities yet</h4>
+                        <button class="btn" @click="navigateTo('browsing')">Browse Lessons & Activities</button>
+                    </div>
 
-                <div v-else-if="currentPage === 'browsing' && (searchedText.trim() && searchResults.length === 0) || displayedItems.length === 0" class="no_results">
-                    <i class="fa fa-search" aria-hidden="true"></i>
-                    <h4>Sorry, No Results Found</h4>
+                    <div v-else-if="currentPage === 'browsing' && (searchedText.trim() && searchResults.length === 0) || displayedItems.length === 0" class="no_results">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                        <h4>Sorry, No Results Found</h4>
+                    </div>
                 </div>
-            </div>
-
+            </div>            
         </div>
 
         <!-- order history page  -->

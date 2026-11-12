@@ -1435,8 +1435,8 @@ form input::placeholder{
     color: #ffffff;
 }
 
-.checkout_message_popup .fa-exclamation-circle{
-    color: #85222f;
+.fa-exclamation-circle{
+    color: #85222f !important;
 }
 
 .checkout_message_popup .fa-sign-in{

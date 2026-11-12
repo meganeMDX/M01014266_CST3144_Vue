@@ -19,7 +19,7 @@ const myApp = Vue.createApp({
             searchedText: "",
             debouncedSearch:null,
             searchResults:[],
-            isSearching:true,
+            isSearching:false,
 
             selectedTeacherId: "",
             selectedAttribute:"topic",
