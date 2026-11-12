@@ -62,7 +62,8 @@ const myApp = Vue.createApp({
 
             showLogOutDropDown:false,
 
-            enrolmentNum: null
+            enrolmentNum: null,
+            fetchingEnrolment: false
         }
     },
     async created(){
@@ -125,12 +126,15 @@ const myApp = Vue.createApp({
         async openLessonPopup(selectedLesson){
             this.selectedLesson = selectedLesson
             this.showPopup = true;
+            this.fetchingEnrolment = true;
             this.enrolmentNum = await this.getEnrollmentNumber(selectedLesson._id);
+            this.fetchingEnrolment = false;
         },
         closeLessonPopup(){
             this.showPopup = false;
             this.selectedLesson = null;
             this.enrolmentNum = null;
+            this.fetchingEnrolment = false;
         },
         openLoginForm(){
             if (this.currentUser){
@@ -672,7 +676,7 @@ const myApp = Vue.createApp({
                 return enrolmentNumber;
 
             }catch(err){
-                console.log("Failed to retrieve order history: ", err);
+                console.log(`Failed to retrieve enrolment number for lesson ${lessonId}: ${err}`);
                 return null;
             }
         }

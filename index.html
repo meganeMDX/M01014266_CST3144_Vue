@@ -401,7 +401,8 @@
                 <div class="lesson_popup_content">
                     <div class="popup_tags">
                         <span class="category_tag">{{ selectedLesson.itemType }}</span>
-                        <span class="slot_tag" v-if="enrolmentNum !== null">{{ enrolmentNum }} slot(s) have already been booked</span>
+                        <span class="slot_tag" v-if="fetchingEnrolment">Retrieving enrolment number</span>
+                        <span class="slot_tag" v-else-if="enrolmentNum !== null">{{ enrolmentNum }} slot(s) have already been booked</span>
                         <span class="slot_tag" v-else>Unable to retrieve enrolment information</span>
                     </div>
 
