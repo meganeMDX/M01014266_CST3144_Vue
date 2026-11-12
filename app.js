@@ -43,6 +43,7 @@ const myApp = Vue.createApp({
             currentUser:null,
             userRatings: [],
             authenticationError:"",
+            loginStatus: false,
 
             passwordFocused: false,
 
@@ -70,6 +71,12 @@ const myApp = Vue.createApp({
     async created(){
         await this.fetchLessons();
         await this.fetchTeachers();
+        const result = await this.requestLoginStatus();
+
+        if (result.login){
+            this.currentUser = result.user;
+            await this.loadUserData();
+        }
 
         this.debouncedSearch = this.debounce(this.searchLessons, 500);
         this.fetchingLessons = false;
@@ -188,6 +195,7 @@ const myApp = Vue.createApp({
 
                 if (response.ok){
                     this.currentUser = result.user;
+                    // sessionStorage.userId = result.user._id;
                     this.showMessage("Login Successful !");
                     this.loadUserData();
                     this.closeLoginRegistrationForm();
@@ -251,6 +259,23 @@ const myApp = Vue.createApp({
             }catch(err){
                 console.log("Failed to register: ", err);
                 this.showMessage("Error. Please log out again.")
+            }
+        },
+        // check if user was logged in - after refreshing page
+        async requestLoginStatus(){
+            try{
+                const url = `${baseURL}/login`;
+                const response = await fetch(url, {credentials: 'include'});
+
+                if (!response.ok){
+                    throw new Error(`HTTP error ! status: ${response.status}`)
+                }
+                const result = await response.json();
+                return result;
+
+            }catch(err){
+                console.log("Failed to request login status: ", err);
+                return {login:false};
             }
         },
         addToCart(itemID){
