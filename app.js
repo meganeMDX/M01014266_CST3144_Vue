@@ -239,6 +239,7 @@ const myApp = Vue.createApp({
 
                 if (response.ok){
                     this.currentUser = null;
+                    this.resetData();
                 }
 
                 this.showMessage(result.message);
@@ -668,6 +669,11 @@ const myApp = Vue.createApp({
         async loadUserData(){
             await this.fetchOrderHistory();
             await this.fetchUserRatings();
+        },
+        // reset user specific data
+        async resetData(){
+            this.orders = [];
+            this.userRatings = [];
         },
         async getEnrollmentNumber(lessonId){
             try{
