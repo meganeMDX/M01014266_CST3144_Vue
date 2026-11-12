@@ -20,6 +20,7 @@ const myApp = Vue.createApp({
             debouncedSearch:null,
             searchResults:[],
             isSearching:false,
+            fetchingLessons:true,
 
             selectedTeacherId: "",
             selectedAttribute:"topic",
@@ -71,6 +72,7 @@ const myApp = Vue.createApp({
         await this.fetchTeachers();
 
         this.debouncedSearch = this.debounce(this.searchLessons, 500);
+        this.fetchingLessons = false;
     },
     methods:{
         navigateTo(pageName){

@@ -51,7 +51,7 @@
             <h2 v-if="currentPage === 'savedItems'" class="page_headers">Saved Lessons &amp; Activities</h2>
 
             <!-- if there's an error loading lessons from db -->
-            <div v-if="currentPage === 'browsing' && lessons.length === 0" class="no_results">
+            <div v-if="currentPage === 'browsing' && !fetchingLessons && lessons.length === 0" class="no_results">
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                 <h4>Sorry, unable to load lessons at the moment</h4>
                 <p>Please try again later...</p>
@@ -161,7 +161,7 @@
                         </div>
                     </div>
 
-                    <div v-else-if="currentPage === 'browsing' && isSearching" class="no_results">
+                    <div v-else-if="currentPage === 'browsing' && (fetchingLessons || isSearching)" class="no_results">
                         <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"></div>
                         <h4>Searching...</h4>
                     </div>
