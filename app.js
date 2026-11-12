@@ -1,5 +1,4 @@
-const baseURL = "http://localhost:3000";
-
+const baseURL = "http://127.0.0.1:3000";
 const numberRegx = /\d/;
 const upperCaseRegex = /(?=.*[A-Z])/;
 const onlyLettersRegex = /^[A-Za-z ]+$/;
@@ -172,6 +171,7 @@ const myApp = Vue.createApp({
                 const url = `${baseURL}/login`;
                 const options = {
                     method: 'POST',
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -201,6 +201,7 @@ const myApp = Vue.createApp({
                 const url = `${baseURL}/register`;
                 const options = {
                     method: 'POST',
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -230,7 +231,8 @@ const myApp = Vue.createApp({
             try{
                 const url = `${baseURL}/login`;
                 const options = {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    credentials: 'include'
                 };
                 const response = await (fetch (url, options));
                 const result = await response.json();
@@ -371,21 +373,22 @@ const myApp = Vue.createApp({
                 };
             });
 
-            const orderDetails={
-                name: this.checkoutName,
-                phoneNumber: this.checkoutPhoneNumber,
-                lessons: lessonsOrdered,
-            }
-
             // save order to database
             try{
                 const url = `${baseURL}/order`;
                 const options = {
                     method: 'POST',
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({orderDetails})
+                    body: JSON.stringify(
+                        {
+                            name: this.checkoutName,
+                            phoneNumber: this.checkoutPhoneNumber,
+                            lessons: lessonsOrdered,
+                        }
+                    )
                 };
                 const response = await (fetch (url, options));
                 const result = await response.json();
@@ -474,6 +477,7 @@ const myApp = Vue.createApp({
                 const url = `${baseURL}/saved-lessons/${lessonId}`;
                 const options = {
                     method: method,
+                    credentials: 'include',
                 };
 
                 const response = await (fetch (url, options));
@@ -519,6 +523,7 @@ const myApp = Vue.createApp({
                 const url = `${baseURL}/ratings`;
                 const options = {
                     method: 'PUT',
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -573,7 +578,7 @@ const myApp = Vue.createApp({
             // retrieves all ratings done by user
             try{
                 const url = `${baseURL}/ratings`;
-                const response = await fetch(url);
+                const response = await fetch(url, {credentials: 'include'});
 
                 if (!response.ok){
                     throw new Error(`HTTP error ! status: ${response.status}`)
@@ -648,7 +653,7 @@ const myApp = Vue.createApp({
         async fetchOrderHistory(){
             try{
                 const url = `${baseURL}/history`;
-                const response = await fetch(url);
+                const response = await fetch(url, {credentials: 'include'});
 
                 if (!response.ok){
                     throw new Error(`HTTP error ! status: ${response.status}`)
@@ -676,7 +681,7 @@ const myApp = Vue.createApp({
                 return enrolmentNumber;
 
             }catch(err){
-                console.log(`Failed to retrieve enrolment number for lesson ${lessonId}: ${err}`);
+                console.log("Failed to retrieve order history: ", err);
                 return null;
             }
         }
@@ -766,7 +771,7 @@ const myApp = Vue.createApp({
             return (
                 this.containsLettersOnly(this.checkoutName) && 
                 this.containsNumbersOnly &&
-                this.checkoutPhoneNumber.length >= 7
+                this.checkoutPhoneNumber?.length >= 7
             );
         },
         ordersWithLessonDetails(){
