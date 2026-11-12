@@ -101,7 +101,7 @@
                 </div>
             </div>
 
-            <div class="results_found">
+            <div class="results_found" v-if="!(currentPage === 'savedItems' & displayedItems.length === 0)">
                 <span>{{ displayedItems.length }} {{ currentPage === "browsing" ? "Results Found" : "Saved Items" }} </span>
             </div>
 
@@ -158,14 +158,17 @@
                     <h4>Searching...</h4>
                 </div>
 
-                <div v-else-if="currentPage === 'savedItems' && !currentUser"  class="no_results">
-                    <i class="fa fa-sign-in" aria-hidden="true"></i>
-                    <h4>Login to save lessons and activities</h4>
+                <div v-else-if="currentPage === 'savedItems' && !currentUser"  class="no_items_display">
+                    <i class="fa fa-bookmark" aria-hidden="true"></i>
+                    <h4>Oops, looks like you're not logged in</h4>
+                    <p>Login to view your saved lessons and activities</p>
+                    <button class="btn" @click="openLoginForm">Login</button>
                 </div>
 
-                <div v-else-if="currentPage === 'savedItems' && currentUser.savedLessonIDs.length === 0" class="no_results">
+                <div v-else-if="currentPage === 'savedItems' && currentUser.savedLessonIDs.length === 0" class="no_items_display">
                     <i class="fa fa-bookmark" aria-hidden="true"></i>
-                    <h4>You have not saved any lessons yet</h4>
+                    <h4>You have not saved any lessons or activities yet</h4>
+                    <button class="btn" @click="navigateTo('browsing')">Browse Lessons & Activities</button>
                 </div>
 
                 <div v-else-if="currentPage === 'browsing' && (searchedText.trim() && searchResults.length === 0) || displayedItems.length === 0" class="no_results">

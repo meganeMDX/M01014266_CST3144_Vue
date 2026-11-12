@@ -698,6 +698,9 @@ const myApp = Vue.createApp({
 
             // saved lessons
             if (this.currentPage === 'savedItems'){
+                if (!this.currentUser){
+                    return [];
+                }
                 const savedItems = this.currentUser.savedLessonIDs.toReversed();
                 return savedItems.map(lessonID => this.lessons.find(lesson => lesson._id === lessonID));
             }
