@@ -33,13 +33,22 @@ p{
 
 .btn:disabled{
     background-color: #545454 !important; 
-    color: #ffffff;
-    cursor: not-allowed;
+    color: #ffffff !important;
+    cursor: not-allowed !important;
     pointer-events: auto;
+    border: solid 1px #545454 !important;
 }
 
 .btn:disabled:hover{
     transform: none !important;
+    color: #ffffff !important;
+    background-color: #545454 !important; 
+    border: solid 1px #545454 !important;
+}
+
+.btn:disabled i, .btn:disabled:hover i{
+    transform: none !important;
+    color: #000000 !important;
 }
 
 [v-cloak]{
@@ -424,6 +433,7 @@ footer hr{
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    background-color: #c88ea7;
 }
 
 .lesson_tags{
@@ -643,7 +653,6 @@ footer hr{
 
 .quantity_controls i{
     font-size: 22px;
-    cursor: pointer;
     transition: 0.2s ease;
     color: #000000;
 }
@@ -660,7 +669,7 @@ footer hr{
     transition: 0.2s ease;
 }
 
-.quantity_controls i:hover{
+.quantity_controls button:hover i{
     color: #c17898;
 }
 
@@ -1109,6 +1118,11 @@ footer hr{
 
 .popup_rating, .order_item_rating span{
     color: #ffcc4d;
+}
+
+.popup_rating .no_rating{
+    color: #545454;
+    font-size: 14px;
 }
 
 .selected_lesson_description p:first-child{

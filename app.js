@@ -314,7 +314,7 @@ const myApp = Vue.createApp({
             setTimeout(() => {
                 this.showMessagePopup = false;
                 this.messageText = "";
-            }, 1500);
+            }, 1200);
         },
         async checkout(){
             this.checkoutErrorMsg = "";

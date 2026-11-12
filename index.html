@@ -138,7 +138,7 @@
                                 <hr>
                                 <div class="lesson_rating">
                                     <i class="fa fa-star" :class="{ 'no_rating' : lesson.ratingCount === 0}" aria-hidden="true"></i>
-                                    <span v-if="lesson.ratingCount > 0">{{ (lesson.rating/lesson.ratingCount).toFixed(1) }} ({{ lesson.ratingCount }})</span>
+                                    <span v-if="lesson.ratingCount > 0">{{ (lesson.totalRating/lesson.ratingCount).toFixed(1) }} ({{ lesson.ratingCount }})</span>
                                     <span v-else class="no_rating">No Ratings</span>
                                 </div>
                                 <div class="lesson_footer">
@@ -239,7 +239,7 @@
 
                                         <div class="col-3 col-lg-2">
                                             <div class="cart_img">
-                                                <img :src=`${baseURL}${item.lesson.imagePath}`>
+                                                <img :src=`${baseURL}${item.lesson.imagePath}` :alt="item.lesson.topic">
                                             </div>
                                         </div>
 
@@ -310,7 +310,7 @@
 
                                 <div class="col-3 col-sm-3 col-lg-2">
                                     <div class="cart_img">
-                                        <img :src=`${baseURL}${cartItem.itemObj.imagePath}` class="img-fluid">
+                                        <img :src=`${baseURL}${cartItem.itemObj.imagePath}` :alt="cartItem.itemObj.topic" class="img-fluid">
                                     </div>
                                 </div>
 
@@ -420,15 +420,16 @@
                     <h4>{{ selectedLesson.topic }}</h4>
 
                     <div class="selected_lesson_img">
-                        <img :src=`${baseURL}${selectedLesson.imagePath}`>
+                        <img :src=`${baseURL}${selectedLesson.imagePath}` :alt="selectedLesson.topic">
                     </div>
 
                     <div class="lesson_table row g-0">
                         <div class="col-6 col-md-3 gx-2">
                             <span class="table_header">Rating</span>
                             <span class="popup_rating">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                {{ selectedLesson.rating }} ({{ selectedLesson.ratingCount }})
+                                <i class="fa fa-star" aria-hidden="true" :class="{ 'no_rating' : selectedLesson.ratingCount === 0}" aria-hidden="true"></i>
+                                <span v-if="selectedLesson.ratingCount > 0">{{ (selectedLesson.totalRating/selectedLesson.ratingCount).toFixed(1) }} ({{ selectedLesson.ratingCount }})</span>
+                                <span v-else class="no_rating"> No Ratings</span>
                             </span>
                         </div>
 
