@@ -34,7 +34,7 @@
                     <button id="user" class="btn" @click="openLoginForm"><i class="fa fa-user-circle-o" aria-hidden="true"></i></button>
                     <div v-if="showLogOutDropDown" id="logout_dropdown">
                         <div class="dropdown_arrow"></div>
-                        <button class="btn" id="logOutBtn" @click="logOut">Log Out</button>
+                        <button class="btn" id="logOutBtn" @click="logOut()">Log Out</button>
                     </div>
                 </div>
             </div>
@@ -605,7 +605,7 @@
             <div v-if="checkoutComplete" class="checkout_message_popup">
                 <i class="fa fa-check-circle-o" aria-hidden="true"></i>
                 <h2>Successful Transaction</h2>
-                <p>Thank you !</p>
+                <p>Thank you {{ currentUser?.name }}!</p>
                 <div>
                     <p>Your Order for {{ getCartCount }} lesson(s) has successfully been submitted.</p>
                     <p>You will now be redirected to the Browsing Page.</p>
@@ -623,6 +623,19 @@
                 </div>
                 <button type="button" class="btn cancel_btn" @click="closeCheckoutPopup">Close</button>
             </div>
+
+            <!-- notify user that cart will be lost -->
+            <div v-if="logOutClearCart" class="delete_confirmation_popup">
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                <h2>Your cart will be lost</h2>
+                <p>Your cart will be cleared and all selected lessons and activities will be removed if you logout.</p>
+                <p>Are you sure you want to proceed?</p>
+                <div class="delete_popup_btns">
+                    <button type="button" class="btn confirm_remove_btn" @click="logOut(true)">Log out</button>
+                    <button type="button" class="btn cancel_btn" @click="closeCartClearancePopup">Cancel</button>
+                </div>
+            </div>
+
         </div>
 
         <!-- message popup -->

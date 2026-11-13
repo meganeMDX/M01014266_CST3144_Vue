@@ -65,7 +65,9 @@ const myApp = Vue.createApp({
             showLogOutDropDown:false,
 
             enrolmentNum: null,
-            fetchingEnrolment: false
+            fetchingEnrolment: false,
+
+            logOutClearCart: false
         }
     },
     async created(){
@@ -73,6 +75,7 @@ const myApp = Vue.createApp({
         await this.fetchTeachers();
         const result = await this.requestLoginStatus();
 
+        // retrieve session
         if (result.login){
             this.currentUser = result.user;
             await this.loadUserData();
@@ -80,6 +83,12 @@ const myApp = Vue.createApp({
 
         this.debouncedSearch = this.debounce(this.searchLessons, 500);
         this.fetchingLessons = false;
+    },
+    mounted(){
+        window.addEventListener('beforeunload', this.handleRefresh);
+    },
+    unmounted(){
+        window.removeEventListener('beforeunload', this.handleRefresh);
     },
     methods:{
         navigateTo(pageName){
@@ -238,7 +247,13 @@ const myApp = Vue.createApp({
                 this.authenticationError = "An error occured during registration. Please try again.";
             }
         },
-        async logOut(){
+        async logOut(logoutConfirmed=false){
+            if (Object.keys(this.cart).length > 0 && !logoutConfirmed){
+                this.showLogOutDropDown = false;
+                this.logOutClearCart = true;
+                this.showPopup = true;
+                return;
+            }
             try{
                 const url = `${baseURL}/login`;
                 const options = {
@@ -250,12 +265,24 @@ const myApp = Vue.createApp({
 
                 if (response.ok){
                     this.currentUser = null;
+
+                    // clear cart and restore lesson spaces
+                    Object.keys(this.cart).forEach(lessonID => {
+                        this.removeFromCart(lessonID)
+                    });
+
                     this.resetData();
+
+                    // redirect to browsing page
+                    if (this.currentPage === 'cart'){
+                        this.currentPage === 'browsing'
+                    };
                 }
 
-                this.showMessage(result.message);
                 this.showLogOutDropDown = false;
-                
+                this.logOutClearCart = false;
+                this.showMessage(result.message);
+
             }catch(err){
                 console.log("Failed to register: ", err);
                 this.showMessage("Error. Please log out again.")
@@ -733,6 +760,18 @@ const myApp = Vue.createApp({
                 console.log("Failed to retrieve order history: ", err);
                 return null;
             }
+        },
+        // display message before refreshing page if cart has items
+        handleRefresh(){
+            if (Object.keys(this.cart).length > 0){
+                event.preventDefault();
+                event.returnValue = '';
+                return;
+            }
+        },
+        closeCartClearancePopup(){
+            this.showPopup = false;
+            this.logOutClearCart = false;
         }
     },
     computed:{
@@ -846,4 +885,4 @@ const myApp = Vue.createApp({
         }
     }
 })
-myApp.mount("#afterSchoolApp")
+myApp.mount("#afterSchoolApp");
