@@ -86,9 +86,13 @@ const myApp = Vue.createApp({
     },
     mounted(){
         window.addEventListener('beforeunload', this.handleRefresh);
+
+        // close logout dropdown when user clicks outside of the logout dropdown
+        document.addEventListener('click', this.closeLogoutDropdown);
     },
     unmounted(){
         window.removeEventListener('beforeunload', this.handleRefresh);
+        document.removeEventListener('click', this.closeLogoutDropdown);
     },
     methods:{
         navigateTo(pageName){
@@ -245,6 +249,17 @@ const myApp = Vue.createApp({
             }catch(err){
                 console.log("Failed to register: ", err);
                 this.authenticationError = "An error occured during registration. Please try again.";
+            }
+        },
+        closeLogoutDropdown(e){
+            if (!this.showLogOutDropDown){
+                return;
+            }
+            const dropDown = document.getElementById('logout_dropdown');
+            const loginButton = document.getElementById('user');
+
+            if (!dropDown.contains(e.target) && !loginButton.contains(e.target)) {
+                this.showLogOutDropDown = false;
             }
         },
         async logOut(logoutConfirmed=false){
