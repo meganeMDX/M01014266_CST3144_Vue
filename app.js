@@ -71,8 +71,11 @@ const myApp = Vue.createApp({
         }
     },
     async created(){
+        this.checkRouteHash();
+        // fetch data
         await this.fetchLessons();
         await this.fetchTeachers();
+        // check if user is logged in
         const result = await this.requestLoginStatus();
 
         // retrieve session
@@ -89,12 +92,28 @@ const myApp = Vue.createApp({
 
         // close logout dropdown when user clicks outside of the logout dropdown
         document.addEventListener('click', this.closeLogoutDropdown);
+
+        window.addEventListener('hashchange', this.checkRouteHash);
     },
     unmounted(){
         window.removeEventListener('beforeunload', this.handleRefresh);
         document.removeEventListener('click', this.closeLogoutDropdown);
+        window.removeEventListener('hashchange', this.checkRouteHash);
     },
     methods:{
+        checkRouteHash(){
+            let page = window.location.hash.split('/')[1] || 'browsing';
+            const validPages = ['browsing', 'cart', 'history', 'savedItems'];
+            // check if its a valid page and prevent from going to cart page if cart is empty
+            if (!validPages.includes(page) || (page === 'cart' && Object.keys(this.cart).length === 0)){
+                page = 'browsing';
+            }
+            if (this.currentPage !== page){
+                this.navigateTo(page);
+            }else if (window.location.hash !== `#/${page}`){
+                window.location.hash = `#/${page}`;
+            }
+        },
         navigateTo(pageName){
             if (this.currentPage === 'cart'){
                 this.clearCheckoutForm();
@@ -109,7 +128,11 @@ const myApp = Vue.createApp({
                 this.expandedOrders = [];
             }
 
+            window.location.hash = `#/${pageName}`;
             this.currentPage = pageName;
+            window.scrollTo(0,0);
+        },
+        scrollToTop(){
             window.scrollTo(0,0);
         },
         getTeacherName(teacherId){
