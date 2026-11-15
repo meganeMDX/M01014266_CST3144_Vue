@@ -1,4 +1,4 @@
-const baseURL = "http://127.0.0.1:3000";
+const baseURL = "https://m01014266-backend.onrender.com";
 const numberRegx = /\d/;
 const upperCaseRegex = /(?=.*[A-Z])/;
 const onlyLettersRegex = /^[A-Za-z ]+$/;
