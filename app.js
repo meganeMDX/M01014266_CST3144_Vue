@@ -54,6 +54,7 @@ const myApp = Vue.createApp({
             checkoutPhoneNumber: "",
             checkoutErrorMsg:"",
             checkoutError: false,
+            isCheckingOut: false,
 
             itemToDelete: null,
 
@@ -418,6 +419,7 @@ const myApp = Vue.createApp({
             }, 1200);
         },
         async checkout(){
+            this.isCheckingOut = true;
             this.checkoutErrorMsg = "";
 
             // check if user is logged in
@@ -447,6 +449,8 @@ const myApp = Vue.createApp({
                     return;
                 }
             }
+
+            this.isCheckingOut = false;
 
             // display confirmation message
             this.checkoutComplete = true;
@@ -790,7 +794,7 @@ const myApp = Vue.createApp({
             await this.fetchUserRatings();
         },
         // reset user specific data
-        async resetData(){
+        resetData(){
             this.orders = [];
             this.userRatings = [];
         },

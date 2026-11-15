@@ -409,7 +409,9 @@
                             </div>
 
                             <div class="form_btn">
-                                <button :disabled="!canCheckout" class="btn" type="submit">Checkout</button>
+                                <button :disabled="!canCheckout || isCheckingOut" class="btn" type="submit">
+                                    {{ isCheckingOut? 'Processing...' : 'Checkout' }}
+                                </button>
                             </div>
                         </form>
                     </div>
