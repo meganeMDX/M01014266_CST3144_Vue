@@ -742,7 +742,7 @@ const myApp = Vue.createApp({
         async searchLessons(){
             this.searchResults = [];
             try{
-                const url = `${baseURL}/lessons/search?q=${this.searchedText.trim()}`;
+                const url = `${baseURL}/lessons/search?q=${encodeURIComponent(this.searchedText.trim())}`;
                 const response = await fetch(url);
 
                 if (!response.ok){
@@ -759,14 +759,20 @@ const myApp = Vue.createApp({
         // delays requesting search results to server
         debounce(fn, ms){
             let timer;
-            return (...args) => {
+            const debounced = (...args) => {
                 clearTimeout(timer);
                 timer = setTimeout(() => fn(...args), ms);
             };
+
+            debounced.cancel = () => {
+                clearTimeout(timer);
+            };
+            return debounced;
         },
         onSearchInput(){
             // prevent request for empty search
             if (!this.searchedText.trim()){
+                this.debouncedSearch.cancel();
                 this.isSearching=false;
                 this.searchResults = [];
                 return;
