@@ -161,9 +161,14 @@
                         </div>
                     </div>
 
-                    <div v-else-if="currentPage === 'browsing' && (fetchingLessons || isSearching)" class="no_results">
+                    <div v-else-if="currentPage === 'browsing' && (fetchingLessons || loadingUserData || isSearching)" class="no_results">
                         <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"></div>
-                        <h4>Searching...</h4>
+                        <h4>{{ isSearching ? 'Searching...' : 'Loading...' }}</h4>
+                    </div>
+
+                    <div v-else-if="currentPage === 'savedItems' && loadingUserData" class="no_results">
+                        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"></div>
+                        <h4>Loading your saved lessons and activities...</h4>
                     </div>
 
                     <div v-else-if="currentPage === 'savedItems' && !currentUser"  class="no_items_display">
@@ -191,7 +196,12 @@
         <div v-if="currentPage === 'history'" id="historyPage">
             <h2 class="page_headers">Order History</h2>
 
-            <div v-if="!currentUser" class="no_items_display">
+            <div v-if="loadingUserData" class="no_results">
+                <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"></div>
+                <h4>Loading your history...</h4>
+            </div>
+
+            <div v-else-if="!currentUser" class="no_items_display">
                 <i class="fa fa-history" aria-hidden="true"></i>
                 <h4>Oops, looks like you're not logged in</h4>
                 <p>Login to view your orders</p>

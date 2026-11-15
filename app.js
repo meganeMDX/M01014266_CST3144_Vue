@@ -66,12 +66,15 @@ const myApp = Vue.createApp({
 
             enrolmentNum: null,
             fetchingEnrolment: false,
+            loadingUserData: false,
 
             logOutClearCart: false
         }
     },
     async created(){
         this.checkRouteHash();
+        this.loadingUserData = true;
+
         // fetch data
         await this.fetchLessons();
         await this.fetchTeachers();
@@ -86,6 +89,7 @@ const myApp = Vue.createApp({
 
         this.debouncedSearch = this.debounce(this.searchLessons, 500);
         this.fetchingLessons = false;
+        this.loadingUserData = false;
     },
     mounted(){
         window.addEventListener('beforeunload', this.handleRefresh);
@@ -169,7 +173,7 @@ const myApp = Vue.createApp({
             this.selectedOrder = "asc";
         },
         async openLessonPopup(selectedLesson){
-            this.selectedLesson = selectedLesson
+            this.selectedLesson = selectedLesson;
             this.showPopup = true;
             this.fetchingEnrolment = true;
             this.enrolmentNum = await this.getEnrollmentNumber(selectedLesson._id);
@@ -230,17 +234,21 @@ const myApp = Vue.createApp({
                 const result = await response.json();
 
                 if (response.ok){
+                    this.loadingUserData = true;
                     this.currentUser = result.user;
-                    // sessionStorage.userId = result.user._id;
+
                     this.showMessage("Login Successful !");
-                    this.loadUserData();
                     this.closeLoginRegistrationForm();
+
+                    await this.loadUserData();
                 }else{
                     this.authenticationError = result.message;
                 }
             }catch(err){
                 console.log("Failed to login: ", err);
                 this.authenticationError = "An error occured during login. Please try again.";
+            }finally{
+                this.loadingUserData = false;
             }
         },
         async registerUser(){
@@ -274,6 +282,7 @@ const myApp = Vue.createApp({
                 this.authenticationError = "An error occured during registration. Please try again.";
             }
         },
+        // close logout dropdown when an outside click is registered
         closeLogoutDropdown(e){
             if (!this.showLogOutDropDown){
                 return;
@@ -322,7 +331,7 @@ const myApp = Vue.createApp({
                 this.showMessage(result.message);
 
             }catch(err){
-                console.log("Failed to register: ", err);
+                console.log("Failed to logout: ", err);
                 this.showMessage("Error. Please log out again.")
             }
         },
@@ -333,13 +342,13 @@ const myApp = Vue.createApp({
                 const response = await fetch(url, {credentials: 'include'});
 
                 if (!response.ok){
-                    throw new Error(`HTTP error ! status: ${response.status}`)
+                    return {login:false};
                 }
                 const result = await response.json();
                 return result;
 
             }catch(err){
-                console.log("Failed to request login status: ", err);
+                console.log("Error occured while requesting login status: ", err);
                 return {login:false};
             }
         },
@@ -661,7 +670,7 @@ const myApp = Vue.createApp({
                     this.userRatings[index]=result.ratingObj;
 
                     // update lesson rating total
-                    this.ratedItem.ratingTotal += ratingDiff;
+                    this.ratedItem.totalRating += ratingDiff;
 
                     this.closeRatingPopup();
                     this.showMessage("Rating updated!");
@@ -671,7 +680,7 @@ const myApp = Vue.createApp({
                     this.userRatings.push(result.ratingObj);
                     
                     // update lesson rating
-                    this.ratedItem.ratingTotal += this.selectedRating;
+                    this.ratedItem.totalRating += this.selectedRating;
                     this.ratedItem.ratingCount += 1;
 
                     this.closeRatingPopup();
@@ -695,7 +704,7 @@ const myApp = Vue.createApp({
                 this.userRatings = await response.json();
 
             }catch(err){
-                console.log("Failed to retrieve ratings from user: ", err);
+                console.log("Failed to retrieve ratings done by user: ", err);
             }
         },
         async fetchLessons(){
@@ -727,6 +736,7 @@ const myApp = Vue.createApp({
             }
         },
         async searchLessons(){
+            this.searchResults = [];
             try{
                 const url = `${baseURL}/lessons/search?q=${this.searchedText.trim()}`;
                 const response = await fetch(url);
@@ -737,11 +747,12 @@ const myApp = Vue.createApp({
                 this.searchResults = await response.json();
 
             }catch(err){
-                console.log("Failed to retrieve teachers: ", err);
+                console.log("Failed to retrieve search results: ", err);
             }finally{
                 this.isSearching=false;
             }
         },
+        // delays requesting search results to server
         debounce(fn, ms){
             let timer;
             return (...args) => {
@@ -795,7 +806,7 @@ const myApp = Vue.createApp({
                 return enrolmentNumber;
 
             }catch(err){
-                console.log("Failed to retrieve order history: ", err);
+                console.log(`Failed to retrieve enrolment number of lesson ${lessonId}: `, err);
                 return null;
             }
         },
@@ -856,7 +867,7 @@ const myApp = Vue.createApp({
 
             return this.sortItems(results);
         },
-        // // name check
+        // name check
         containsNumbersOnly(){
             return onlyNumbersRegex.test(this.checkoutPhoneNumber);
         },
@@ -880,6 +891,7 @@ const myApp = Vue.createApp({
                 this.isMinLength && this.containsNum && this.containsUpperCase
             );
         },
+        // get total number of items in cart
         getCartCount(){
             let count = 0;
 
@@ -888,6 +900,7 @@ const myApp = Vue.createApp({
             });
             return count;
         },
+        // get total price of cart items
         getCartTotal(){
             let total = 0;
 
