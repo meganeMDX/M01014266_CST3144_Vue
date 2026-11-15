@@ -49,6 +49,8 @@ https://github.com/meganeMDX/M01014266_CST3144_Express
 
 ## References
 
+Debnath, A. (2026) *Debounce with Cancel in JavaScript*. Available at: https://www.ashishdebnath.in/blog/debounce-with-cancel (Accessed: 15 November 2026).
+
 prabhatojha (2020) *How to pop up an alert box when the browser's refresh button is clicked?*. Available at: https://stackoverflow.com/a/64282126 (Accessed: 13 November 2026).
 
 Vue.js (n.d.) *Routing*. Available at: https://vuejs.org/guide/scaling-up/routing.html (Accessed: 13 November 2026).
