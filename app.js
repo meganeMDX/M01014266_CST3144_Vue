@@ -69,7 +69,8 @@ const myApp = Vue.createApp({
             fetchingEnrolment: false,
             loadingUserData: false,
 
-            logOutClearCart: false
+            logOutClearCart: false,
+            manipulatedSavedLesson: new set(),
         }
     },
     async created(){
@@ -419,7 +420,10 @@ const myApp = Vue.createApp({
             }, 1200);
         },
         async checkout(){
-            this.isCheckingOut = true;
+            if (this.isCheckingOut){
+                return
+            }
+
             this.checkoutErrorMsg = "";
 
             // check if user is logged in
@@ -434,27 +438,31 @@ const myApp = Vue.createApp({
                 return;
             }
             
-            const orderSaved = await this.saveOrder();
-            if (!orderSaved){
-                // show error popup
-                this.checkoutError = true;
-                this.showPopup=true;
-                return;
-            }
-            for (const [lessonId, value] of Object.entries(this.cart)){
-                let lessonUpdated = await this.updateLessonAvailability(lessonId, value.itemObj.space);
-                if (!lessonUpdated){
+            this.isCheckingOut = true;
+
+            try{
+                const orderSaved = await this.saveOrder();
+                if (!orderSaved){
+                    // show error popup
                     this.checkoutError = true;
                     this.showPopup=true;
                     return;
                 }
+                for (const [lessonId, value] of Object.entries(this.cart)){
+                    let lessonUpdated = await this.updateLessonAvailability(lessonId, value.itemObj.space);
+                    if (!lessonUpdated){
+                        this.checkoutError = true;
+                        this.showPopup=true;
+                        return;
+                    }
+                }
+
+                // display confirmation message
+                this.checkoutComplete = true;
+                this.showPopup=true;
+            }finally{
+                this.isCheckingOut = false;
             }
-
-            this.isCheckingOut = false;
-
-            // display confirmation message
-            this.checkoutComplete = true;
-            this.showPopup=true;
         },
         closeCheckoutPopup(){
 
@@ -573,25 +581,34 @@ const myApp = Vue.createApp({
                 return;
             }
 
-            if (this.currentUser.savedLessonIDs.includes(lesson._id)){
-                // unsave
-                const result = await this.updateSavedLesson(lesson._id, 'DELETE');
-                if (result.lessonUnsaved){
-                    this.currentUser.savedLessonIDs = this.currentUser.savedLessonIDs.filter(id => id !== lesson._id);
-                    this.showMessage(`${lesson.itemType} removed from saves`);
-                }else{
-                    this.showMessage(`Error unsaving ${lesson.itemType}`);
-                }
+            if (this.manipulatedSavedLesson.has(lesson._id)){
+                return;
+            }
 
-            }else{
-                // save
-                const result = await this.updateSavedLesson(lesson._id, 'PUT');
-                if (result.lessonSaved){
-                    this.currentUser.savedLessonIDs.push(lesson._id);
-                    this.showMessage(`${lesson.itemType} saved`);
+            this.manipulatedSavedLesson.add(lesson._id);
+            try{
+                if (this.currentUser.savedLessonIDs.includes(lesson._id)){
+                    // unsave
+                    const result = await this.updateSavedLesson(lesson._id, 'DELETE');
+                    if (result?.lessonUnsaved){
+                        this.currentUser.savedLessonIDs = this.currentUser.savedLessonIDs.filter(id => id !== lesson._id);
+                        this.showMessage(`${lesson.itemType} removed from saves`);
+                    }else{
+                        this.showMessage(`Error unsaving ${lesson.itemType}`);
+                    }
+
                 }else{
-                    this.showMessage(`Error saving ${lesson.itemType}`);
+                    // save
+                    const result = await this.updateSavedLesson(lesson._id, 'PUT');
+                    if (result?.lessonSaved){
+                        this.currentUser.savedLessonIDs.push(lesson._id);
+                        this.showMessage(`${lesson.itemType} saved`);
+                    }else{
+                        this.showMessage(`Error saving ${lesson.itemType}`);
+                    }
                 }
+            }finally{
+                this.manipulatedSavedLesson.delete(lesson._id);
             }
         },
         async updateSavedLesson(lessonId, method){
