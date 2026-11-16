@@ -70,7 +70,9 @@ const myApp = Vue.createApp({
             loadingUserData: false,
 
             logOutClearCart: false,
-            manipulatedSavedLesson: new Set()
+            manipulatedSavedLesson: new Set(),
+
+            isSubmittingRating: false
         }
     },
     async created(){
@@ -651,12 +653,19 @@ const myApp = Vue.createApp({
             this.showPopup = true;
         },
         closeRatingPopup(){
+            if (this.isSubmittingRating){
+                return;
+            }
             this.showPopup = false;
             this.ratedItem = null;
             this.selectedRating = 0;
         },
         async rateItem(){
             try{
+                if (this.isSubmittingRating){
+                    return;
+                }
+                this.isSubmittingRating = true;
                 const existingRating = this.getLessonRating(this.ratedItem._id);
 
                 const url = `${baseURL}/ratings`;
@@ -711,6 +720,8 @@ const myApp = Vue.createApp({
             }catch(err){
                 console.log("Failed to rate item: ", err);
                 this.showMessage("Failed to update rating. Please try again.");
+            }finally{
+                this.isSubmittingRating = false;
             }
         },
         async fetchUserRatings(){
