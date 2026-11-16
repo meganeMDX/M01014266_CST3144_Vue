@@ -34,7 +34,7 @@
                     <button id="user" class="btn" @click="openLoginForm"><i class="fa fa-user-circle-o" aria-hidden="true"></i></button>
                     <div v-if="showLogOutDropDown" id="logout_dropdown">
                         <div class="dropdown_arrow"></div>
-                        <button class="btn" id="logOutBtn" @click="logOut()">Log Out</button>
+                        <button class="btn" id="logOutBtn" @click="logOut()" :disabled="isAuthenticating">Log Out</button>
                     </div>
                 </div>
             </div>
@@ -525,7 +525,7 @@
                     </div>
                     <div class="switch_form">
                         <p>Don&apos;t have an account yet?</p>
-                        <button type="button" class="btn" @click="openRegistrationForm">Register</button>
+                        <button type="button" class="btn" @click="openRegistrationForm" :disabled="isAuthenticating">Register</button>
                     </div>
                 </form>
 
@@ -560,7 +560,7 @@
                     </div>
                     <div class="switch_form">
                         <p>Already have an account?</p>
-                        <button type="button" class="btn" @click="openLoginForm">Login</button>
+                        <button type="button" class="btn" @click="openLoginForm" :disabled="isAuthenticating">Login</button>
                     </div>
                 </form>
             </div>

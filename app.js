@@ -72,7 +72,8 @@ const myApp = Vue.createApp({
             logOutClearCart: false,
             manipulatedSavedLesson: new Set(),
 
-            isSubmittingRating: false
+            isSubmittingRating: false,
+            isAuthenticating: false,
         }
     },
     async created(){
@@ -190,6 +191,9 @@ const myApp = Vue.createApp({
             this.fetchingEnrolment = false;
         },
         openLoginForm(){
+            if (this.isAuthenticating){
+                return;
+            }
             if (this.currentUser){
                 this.showLogOutDropDown = !this.showLogOutDropDown;
                 return;
@@ -200,6 +204,9 @@ const myApp = Vue.createApp({
             this.showLoginForm = true;
         },
         openRegistrationForm(){
+            if (this.isAuthenticating){
+                return;
+            }
             this.clearFormsLoginRegistrationForm();
             this.showPopup = true;
             this.showLoginForm = false;
@@ -221,6 +228,11 @@ const myApp = Vue.createApp({
             this.authenticationError ="";
         },
         async loginUser(){
+            if (this.isAuthenticating){
+                return;
+            }
+
+            this.isAuthenticating = true;
             try{
                 const url = `${baseURL}/login`;
                 const options = {
@@ -253,9 +265,15 @@ const myApp = Vue.createApp({
                 this.authenticationError = "An error occured during login. Please try again.";
             }finally{
                 this.loadingUserData = false;
+                this.isAuthenticating = false;
             }
         },
         async registerUser(){
+            if (this.isAuthenticating){
+                return;
+            }
+
+            this.isAuthenticating = true;
             try{
                 const url = `${baseURL}/register`;
                 const options = {
@@ -284,6 +302,8 @@ const myApp = Vue.createApp({
             }catch(err){
                 console.log("Failed to register: ", err);
                 this.authenticationError = "An error occured during registration. Please try again.";
+            }finally{
+                this.isAuthenticating = false;
             }
         },
         // close logout dropdown when an outside click is registered
@@ -299,12 +319,18 @@ const myApp = Vue.createApp({
             }
         },
         async logOut(logoutConfirmed=false){
+            if (this.isAuthenticating){
+                return;
+            }
             if (Object.keys(this.cart).length > 0 && !logoutConfirmed){
                 this.showLogOutDropDown = false;
                 this.logOutClearCart = true;
                 this.showPopup = true;
                 return;
             }
+
+            this.isAuthenticating = true;
+
             try{
                 const url = `${baseURL}/login`;
                 const options = {
@@ -326,7 +352,7 @@ const myApp = Vue.createApp({
 
                     // redirect to browsing page
                     if (this.currentPage === 'cart'){
-                        this.currentPage === 'browsing'
+                        this.navigateTo('browsing');
                     };
                 }
 
@@ -337,6 +363,8 @@ const myApp = Vue.createApp({
             }catch(err){
                 console.log("Failed to logout: ", err);
                 this.showMessage("Error. Please log out again.")
+            }finally{
+                this.isAuthenticating = false;
             }
         },
         // check if user was logged in - after refreshing page
