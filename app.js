@@ -70,7 +70,7 @@ const myApp = Vue.createApp({
             loadingUserData: false,
 
             logOutClearCart: false,
-            manipulatedSavedLesson: new set(),
+            manipulatedSavedLesson: new Set()
         }
     },
     async created(){
