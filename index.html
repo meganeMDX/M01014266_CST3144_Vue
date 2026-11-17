@@ -582,13 +582,15 @@
                     </div>
                 </div>
                 <div class="selected_rating">
-                    <button v-for="star in 5" :key=star class="btn" @click="selectedRating=star" :disabled="isSubmittingRating">
+                    <button v-for="star in 5" :key=star class="btn star_rating_btn" @click="selectedRating=star" :disabled="isSubmittingRating">
                         <i class="fa fa-star" aria-hidden="true" :class="{ 'active_star' : star <= selectedRating}"></i>
                     </button>
                 </div>
                 <div class="rating_popup_btns">
                     <button type="button" class="btn cancel_btn" @click="closeRatingPopup" :disabled="isSubmittingRating">Cancel</button>
-                    <button type="button" class="btn confirm_rating_btn" @click="rateItem" :disabled="isSubmittingRating || selectedRating === 0 || selectedRating === getLessonRating(ratedItem._id)?.rating">Confirm</button>
+                    <button type="button" class="btn confirm_rating_btn" @click="rateItem" :disabled="isSubmittingRating || selectedRating === 0 || selectedRating === getLessonRating(ratedItem._id)?.rating">
+                        {{ isSubmittingRating? 'Saving...': 'Confirm' }}
+                    </button>
                 </div>
             </div>
 

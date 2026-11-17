@@ -31,7 +31,7 @@ p{
     margin: 0;
 }
 
-.btn:disabled{
+.btn:not(.star_rating_btn):disabled{
     background-color: #545454 !important; 
     color: #ffffff !important;
     cursor: not-allowed !important;
@@ -40,7 +40,7 @@ p{
     text-decoration: none;
 }
 
-.btn:disabled:hover{
+.btn:disabled:not(.star_rating_btn):hover{
     transform: none !important;
     color: #ffffff !important;
     background-color: #545454 !important; 
@@ -48,7 +48,7 @@ p{
     text-decoration: none;
 }
 
-.btn:disabled i, .btn:disabled:hover i{
+.btn:not(.star_rating_btn):disabled i, .btn:not(.star_rating_btn):disabled:hover i{
     transform: none !important;
     color: #000000 !important;
 }
@@ -153,6 +153,13 @@ nav button{
 
 #logout_dropdown button:hover{
     text-decoration: underline;
+}
+
+#logout_dropdown button:disabled:hover{
+    text-decoration: none;
+    color: #545454 !important;
+    border: none !important;
+    background-color: transparent !important;
 }
 
 .dropdown_arrow{
@@ -1001,6 +1008,14 @@ footer hr{
     background: #e5ab17;
     color: #ffffff;
 }
+
+.star_rating_btn:disabled, .star_rating_btn:disabled:hover,
+.star_rating_btn:disabled i, .star_rating_btn:disabled:hover i{
+    cursor: not-allowed;
+    transform: none !important;
+    border: none !important;
+}
+
 /* popups */
 .popup_overlay{
     position: fixed;
@@ -1345,10 +1360,11 @@ form input::placeholder{
     margin-left: 6px;
 }
 
-.close_popup:disabled, .switch_form button:disabled, #logOutBtn:disabled,
-.close_popup:hover:disabled, .switch_form button:hover:disabled, #logOutBtn:hover:disabled{
-    background-color: transparent !important;
+.login_registration_popup .close_popup:disabled, .login_registration_popup .switch_form button:disabled,
+.login_registration_popup .close_popup:hover:disabled, .login_registration_popup .switch_form button:hover:disabled{
+    background-color: white !important;
     color: #545454 !important;
+    border: none !important;
 }
 
 
