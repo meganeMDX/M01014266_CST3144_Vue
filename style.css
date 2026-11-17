@@ -37,6 +37,7 @@ p{
     cursor: not-allowed !important;
     pointer-events: auto;
     border: solid 1px #545454 !important;
+    text-decoration: none;
 }
 
 .btn:disabled:hover{
@@ -44,6 +45,7 @@ p{
     color: #ffffff !important;
     background-color: #545454 !important; 
     border: solid 1px #545454 !important;
+    text-decoration: none;
 }
 
 .btn:disabled i, .btn:disabled:hover i{
@@ -1342,6 +1344,13 @@ form input::placeholder{
     font-size: 12px;
     margin-left: 6px;
 }
+
+.close_popup:disabled, .switch_form button:disabled, #logOutBtn:disabled,
+.close_popup:hover:disabled, .switch_form button:hover:disabled, #logOutBtn:hover:disabled{
+    background-color: transparent !important;
+    color: #545454 !important;
+}
+
 
 /* confirmation for deleting cart item popup */
 .delete_confirmation_popup, .checkout_message_popup, .rating_popup{

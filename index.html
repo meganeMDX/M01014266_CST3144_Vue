@@ -502,7 +502,7 @@
 
             <!-- login/registration popup -->
             <div v-if="showLoginForm || showRegistrationForm" class="login_registration_popup">
-                <button class="btn close_popup" @click="closeLoginRegistrationForm">
+                <button class="btn close_popup" @click="closeLoginRegistrationForm" :disabled="isAuthenticating">
                     <i class="fa fa-times" aria-hidden="true"></i>
                 </button>
 
@@ -521,7 +521,7 @@
                     </div>
 
                     <div class="form_btn">
-                        <button :disabled="!canAttemptLogin" class="btn" type="submit">Login</button>
+                        <button :disabled="!canAttemptLogin || isAuthenticating" class="btn" type="submit">{{isAuthenticating ? 'Logging in...' : 'Login' }}</button>
                     </div>
                     <div class="switch_form">
                         <p>Don&apos;t have an account yet?</p>
@@ -556,7 +556,7 @@
                     </div>
 
                     <div class="form_btn btn">
-                        <button :disabled="!canAttemptRegistration" class="btn" type="submit">Register</button>
+                        <button :disabled="!canAttemptRegistration || isAuthenticating" class="btn" type="submit">{{isAuthenticating ? 'Creating account...' : 'Register' }}</button>
                     </div>
                     <div class="switch_form">
                         <p>Already have an account?</p>
