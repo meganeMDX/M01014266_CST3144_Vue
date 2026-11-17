@@ -37,12 +37,14 @@ Logged-in users can view their previous orders and related information. They can
 - Bootstrap
 - Font Awesome
 
-## Running application
-The front-end is hosted on GitHub Pages at: 
+## Running Application
+The front-end is hosted on GitHub Pages. Access the application using the link below:
 
 https://meganemdx.github.io/M01014266_CST3144_Vue/
 
-## Back-end
+**Recommended browser**: Google Chrome.
+
+## Back-End
 The back-end source code is available in the following repository and is hosted on Render:
 
 https://github.com/meganeMDX/M01014266_CST3144_Express
