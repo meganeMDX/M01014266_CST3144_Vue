@@ -681,9 +681,6 @@ const myApp = Vue.createApp({
             this.showPopup = true;
         },
         closeRatingPopup(){
-            if (this.isSubmittingRating){
-                return;
-            }
             this.showPopup = false;
             this.ratedItem = null;
             this.selectedRating = 0;
