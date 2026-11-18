@@ -44,6 +44,12 @@ https://meganemdx.github.io/M01014266_CST3144_Vue/
 
 **Recommended browser**: Google Chrome.
 
+### Test Account
+
+The following pre-existing test account can be used to log in. Alternatively, you can register a new account.
+- **Email**: test@gmail.com
+- **Password**: T12345678
+
 ## Back-End
 The back-end source code is available in the following repository and is hosted on Render:
 
